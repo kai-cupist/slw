@@ -9,10 +9,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### 인프라 (INFRA)
 
-- [ ] **INFRA-01**: Docker Compose로 PostgreSQL과 NestJS 개발 환경을 실행할 수 있다
+- [x] **INFRA-01**: Docker Compose로 PostgreSQL과 NestJS 개발 환경을 실행할 수 있다
 - [ ] **INFRA-02**: 수동 SQL 마이그레이션 스크립트로 DB 스키마를 관리할 수 있다
-- [ ] **INFRA-03**: NestJS 앱이 PostgreSQL에 Raw SQL로 접근할 수 있다 (pg Pool 기반)
-- [ ] **INFRA-04**: 환경 변수(.env)로 DB 접속 정보와 API 키를 관리한다
+- [x] **INFRA-03**: NestJS 앱이 PostgreSQL에 Raw SQL로 접근할 수 있다 (pg Pool 기반)
+- [x] **INFRA-04**: 환경 변수(.env)로 DB 접속 정보와 API 키를 관리한다
 
 ### 쓰기 주제 (PROMPT)
 
@@ -53,7 +53,7 @@ Requirements for initial release. Each maps to roadmap phases.
 ### API 공통 (API)
 
 - [ ] **API-01**: REST API는 일관된 응답 형식을 사용한다 (성공/에러 모두)
-- [ ] **API-02**: SQL 파라미터 바인딩으로 SQL Injection을 방지한다
+- [x] **API-02**: SQL 파라미터 바인딩으로 SQL Injection을 방지한다
 - [ ] **API-03**: 입력 값 유효성 검증을 수행한다 (빈 텍스트, 글자 수 제한 등)
 
 ## v2 Requirements
@@ -100,12 +100,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 1 | Pending |
+| INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Pending |
-| INFRA-03 | Phase 1 | Pending |
-| INFRA-04 | Phase 1 | Pending |
+| INFRA-03 | Phase 1 | Complete |
+| INFRA-04 | Phase 1 | Complete |
 | API-01 | Phase 1 | Pending |
-| API-02 | Phase 1 | Pending |
+| API-02 | Phase 1 | Complete |
 | API-03 | Phase 1 | Pending |
 | PROMPT-01 | Phase 2 | Pending |
 | PROMPT-02 | Phase 2 | Pending |

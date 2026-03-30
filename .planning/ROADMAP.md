@@ -31,7 +31,7 @@
 **Plans**: 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- NestJS 프로젝트 생성, Docker Compose 환경 구성, DatabaseModule 구축
+- [x] 01-01-PLAN.md -- NestJS 프로젝트 생성, Docker Compose 환경 구성, DatabaseModule 구축
 - [ ] 01-02-PLAN.md -- 수동 SQL 마이그레이션 시스템, API 공통 레이어(Envelope 응답, 유효성 검증, Swagger)
 
 ### Phase 2: 쓰기 주제 및 답안 관리
