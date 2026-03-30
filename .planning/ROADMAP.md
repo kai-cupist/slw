@@ -28,11 +28,11 @@
   2. `migrations/` 폴더의 SQL 스크립트를 순서대로 실행하면 스키마가 생성되고, `schema_migrations` 테이블에 적용 이력이 기록된다
   3. API 응답이 성공/에러 모두 일관된 JSON 형식으로 반환되고, 유효성 검증 실패 시 구체적인 에러 메시지가 포함된다
   4. 환경 변수(.env)로 DB 접속 정보와 API 키가 관리되며, .env.example 파일이 존재한다
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md -- NestJS 프로젝트 생성, Docker Compose 환경 구성, DatabaseModule 구축
+- [ ] 01-02-PLAN.md -- 수동 SQL 마이그레이션 시스템, API 공통 레이어(Envelope 응답, 유효성 검증, Swagger)
 
 ### Phase 2: 쓰기 주제 및 답안 관리
 **Goal**: 사용자가 쓰기 주제를 탐색하고, 답안을 작성/임시저장/제출/삭제하며, 과거 제출 이력을 조회할 수 있는 상태
@@ -89,7 +89,7 @@ Plans:
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. 인프라 및 기반 구축 | 0/2 | Not started | - |
+| 1. 인프라 및 기반 구축 | 0/2 | Planning | - |
 | 2. 쓰기 주제 및 답안 관리 | 0/3 | Not started | - |
 | 3. AI 평가 및 이력 | 0/2 | Not started | - |
 | 4. 모바일 클라이언트 | 0/2 | Not started | - |
