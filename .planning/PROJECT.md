@@ -12,7 +12,11 @@
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Docker Compose로 PostgreSQL + NestJS 개발 환경 실행 — Phase 1
+- ✓ 수동 SQL 마이그레이션으로 DB 스키마 관리 — Phase 1
+- ✓ NestJS에서 Raw SQL(pg Pool)로 DB 접근 — Phase 1
+- ✓ 일관된 API 응답 형식 (Envelope 패턴) — Phase 1
+- ✓ SQL 파라미터 바인딩으로 SQL Injection 방지 — Phase 1
 
 ### Active
 
@@ -76,4 +80,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-30 after initialization*
+*Last updated: 2026-03-30 after Phase 1 completion*
