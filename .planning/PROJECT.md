@@ -17,16 +17,16 @@
 - ✓ NestJS에서 Raw SQL(pg Pool)로 DB 접근 — Phase 1
 - ✓ 일관된 API 응답 형식 (Envelope 패턴) — Phase 1
 - ✓ SQL 파라미터 바인딩으로 SQL Injection 방지 — Phase 1
+- ✓ 쓰기 주제/프롬프트를 DB에서 조회하여 제공 — Phase 2
+- ✓ 작성 중인 답안을 임시저장하고, 이어쓰기/수정할 수 있음 — Phase 2
+- ✓ 임시저장된 답안 또는 새로 작성한 텍스트를 최종 제출 — Phase 2
+- ✓ 제출한 답안을 삭제할 수 있음 — Phase 2
 
 ### Active
 
-- [ ] 쓰기 주제/프롬프트를 DB에서 조회하여 제공
-- [ ] 작성 중인 답안을 임시저장하고, 이어쓰기/수정할 수 있음
-- [ ] 임시저장된 답안 또는 새로 작성한 텍스트를 최종 제출
 - [ ] 외부 LLM API를 호출하여 텍스트를 평가
 - [ ] 점수와 상세 피드백을 사용자에게 반환
 - [ ] 과거 제출 내역과 점수 추이를 확인
-- [ ] 제출한 답안을 삭제할 수 있음
 
 ### Out of Scope
 
@@ -55,18 +55,19 @@
 
 ## Key Decisions
 
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
+| Decision                  | Rationale                                       | Outcome   |
+| ------------------------- | ----------------------------------------------- | --------- |
 | v1은 쓰기 카테고리만 구현 | 텍스트 I/O만으로 백엔드 핵심 흐름을 빠르게 경험 | — Pending |
-| Raw SQL 사용 (ORM 금지) | SQL 근본 동작 방식 체득 후 ORM 필요성 체감 | — Pending |
-| Groq 무료 티어 1순위 | Llama 3.3 70B, 일일 1,000 요청, 빠른 추론 속도 | — Pending |
-| 인증 없이 시작 | v1 범위 최소화, v2에서 추가 | — Pending |
+| Raw SQL 사용 (ORM 금지)   | SQL 근본 동작 방식 체득 후 ORM 필요성 체감      | — Pending |
+| Groq 무료 티어 1순위      | Llama 3.3 70B, 일일 1,000 요청, 빠른 추론 속도  | — Pending |
+| 인증 없이 시작            | v1 범위 최소화, v2에서 추가                     | — Pending |
 
 ## Evolution
 
 This document evolves at phase transitions and milestone boundaries.
 
 **After each phase transition** (via `/gsd:transition`):
+
 1. Requirements invalidated? -> Move to Out of Scope with reason
 2. Requirements validated? -> Move to Validated with phase reference
 3. New requirements emerged? -> Add to Active
@@ -74,10 +75,12 @@ This document evolves at phase transitions and milestone boundaries.
 5. "What This Is" still accurate? -> Update if drifted
 
 **After each milestone** (via `/gsd:complete-milestone`):
+
 1. Full review of all sections
 2. Core Value check — still the right priority?
 3. Audit Out of Scope — reasons still valid?
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-30 after Phase 1 completion*
+
+_Last updated: 2026-03-30 after Phase 2 completion_
