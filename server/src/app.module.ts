@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { MigrationModule } from './migration/migration.module';
 import { PromptsModule } from './prompts/prompts.module';
+import { SubmissionsModule } from './submissions/submissions.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -13,6 +14,7 @@ import { AppController } from './app.controller';
     DatabaseModule,
     MigrationModule,
     PromptsModule,
+    SubmissionsModule,
   ],
   controllers: [AppController],
 })
