@@ -54,7 +54,7 @@ Plans:
 
 Plans:
 
-- [ ] 02-01-PLAN.md -- DB 마이그레이션(prompts/submissions 테이블, 시드 데이터) + 공통 인프라(UserIdGuard, 페이지네이션)
+- [x] 02-01-PLAN.md -- DB 마이그레이션(prompts/submissions 테이블, 시드 데이터) + 공통 인프라(UserIdGuard, 페이지네이션)
 - [ ] 02-02-PLAN.md -- Prompts 모듈 (주제 목록 조회, 상세 조회, 필터링 API)
 - [ ] 02-03-PLAN.md -- Submissions 모듈 (답안 생성/수정/제출/삭제/목록/상세 API)
 

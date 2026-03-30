@@ -18,8 +18,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [ ] **PROMPT-01**: 사용자가 쓰기 주제 목록을 조회할 수 있다
 - [ ] **PROMPT-02**: 사용자가 쓰기 주제의 상세 내용을 확인할 수 있다
-- [ ] **PROMPT-03**: 주제에 난이도(초급/중급/고급)와 카테고리가 표시된다
-- [ ] **PROMPT-04**: DB에 시드 데이터(20-30개 주제)가 포함된다
+- [x] **PROMPT-03**: 주제에 난이도(초급/중급/고급)와 카테고리가 표시된다
+- [x] **PROMPT-04**: DB에 시드 데이터(20-30개 주제)가 포함된다
 
 ### 답안 관리 (SUB)
 
@@ -109,8 +109,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | API-03 | Phase 1 | Complete |
 | PROMPT-01 | Phase 2 | Pending |
 | PROMPT-02 | Phase 2 | Pending |
-| PROMPT-03 | Phase 2 | Pending |
-| PROMPT-04 | Phase 2 | Pending |
+| PROMPT-03 | Phase 2 | Complete |
+| PROMPT-04 | Phase 2 | Complete |
 | SUB-01 | Phase 2 | Pending |
 | SUB-02 | Phase 2 | Pending |
 | SUB-03 | Phase 2 | Pending |

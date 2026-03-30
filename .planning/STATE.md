@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-stopped_at: Phase 2 context gathered
-last_updated: "2026-03-30T13:32:56.792Z"
+status: Ready to execute
+stopped_at: Phase 02 Plan 01 완료 - DB 스키마 및 공통 인프라 구축
+last_updated: "2026-03-30T13:59:17.442Z"
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 5
+  completed_plans: 3
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-30)
 
 **Core value:** 사용자가 쓰기 주제를 받고, 텍스트를 작성하여 제출하면, AI가 평가하고 의미 있는 피드백을 돌려주는 것
-**Current focus:** Phase 01 — infra-setup
+**Current focus:** Phase 02 — prompts-submissions
 
 ## Current Position
 
-Phase: 2
-Plan: Not started
+Phase: 02 (prompts-submissions) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Plan: Not started
 *Updated after each plan completion*
 | Phase 01 P01 | 4min | 2 tasks | 18 files |
 | Phase 01 P02 | 4min | 3 tasks | 11 files |
+| Phase 02-prompts-submissions P01 | 3min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -65,6 +66,9 @@ Recent decisions affecting current work:
 - [Phase 01]: 마이그레이션 디렉토리 fallback 로직으로 로컬/Docker 환경 모두 지원
 - [Phase 01]: Envelope 응답 패턴 확립: 성공 { success: true, data }, 에러 { success: false, error: { code, message, details? } }
 - [Phase 01]: Swagger UI를 /api-docs 경로에 설정
+- [Phase 02-prompts-submissions]: VARCHAR + CHECK constraint 사용 (PostgreSQL ENUM 대신) - 마이그레이션 시 값 변경이 용이
+- [Phase 02-prompts-submissions]: Partial index로 soft delete된 행 제외 (deleted_at IS NULL) - 조회 성능 최적화
+- [Phase 02-prompts-submissions]: UserIdGuard는 컨트롤러 단위 적용 (전역 X) - prompts는 공개 데이터
 
 ### Pending Todos
 
@@ -77,6 +81,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-30T13:32:56.790Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-prompts-submissions/02-CONTEXT.md
+Last session: 2026-03-30T13:59:17.440Z
+Stopped at: Phase 02 Plan 01 완료 - DB 스키마 및 공통 인프라 구축
+Resume file: None
