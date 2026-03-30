@@ -4,6 +4,7 @@ import {
   ExecutionContext,
   BadRequestException,
 } from '@nestjs/common';
+import type { Request } from 'express';
 
 /**
  * X-User-Id 헤더 검증 가드
@@ -15,10 +16,10 @@ import {
 @Injectable()
 export class UserIdGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
-    const userId = request.headers['x-user-id'];
+    const request = context.switchToHttp().getRequest<Request>();
+    const userIdHeader = request.headers['x-user-id'];
 
-    if (!userId || typeof userId !== 'string' || userId.trim() === '') {
+    if (typeof userIdHeader !== 'string' || userIdHeader.trim() === '') {
       throw new BadRequestException('X-User-Id 헤더가 필요합니다');
     }
 
