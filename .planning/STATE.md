@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to execute
-stopped_at: Completed 01-01-PLAN.md
-last_updated: "2026-03-30T11:17:22.577Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 01-02-PLAN.md
+last_updated: "2026-03-30T11:24:18.103Z"
 progress:
   total_phases: 4
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 2
-  completed_plans: 1
+  completed_plans: 2
 ---
 
 # Project State
@@ -47,6 +47,7 @@ Plan: 2 of 2
 
 *Updated after each plan completion*
 | Phase 01 P01 | 4min | 2 tasks | 18 files |
+| Phase 01 P02 | 4min | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -61,6 +62,9 @@ Recent decisions affecting current work:
 - [Phase 01]: pg Pool을 @Global() 커스텀 프로바이더로 등록하여 전역 주입 가능하게 함
 - [Phase 01]: connectionTimeoutMillis 5000ms로 컨테이너 시작 시 DB 준비 대기 안정성 확보
 - [Phase 01]: DatabaseService에 query/queryOne/withTransaction 3개 메서드로 Raw SQL 인터페이스 확립
+- [Phase 01]: 마이그레이션 디렉토리 fallback 로직으로 로컬/Docker 환경 모두 지원
+- [Phase 01]: Envelope 응답 패턴 확립: 성공 { success: true, data }, 에러 { success: false, error: { code, message, details? } }
+- [Phase 01]: Swagger UI를 /api-docs 경로에 설정
 
 ### Pending Todos
 
@@ -73,6 +77,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-30T11:17:22.576Z
-Stopped at: Completed 01-01-PLAN.md
+Last session: 2026-03-30T11:24:18.101Z
+Stopped at: Completed 01-02-PLAN.md
 Resume file: None

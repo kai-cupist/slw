@@ -32,7 +32,7 @@
 
 Plans:
 - [x] 01-01-PLAN.md -- NestJS 프로젝트 생성, Docker Compose 환경 구성, DatabaseModule 구축
-- [ ] 01-02-PLAN.md -- 수동 SQL 마이그레이션 시스템, API 공통 레이어(Envelope 응답, 유효성 검증, Swagger)
+- [x] 01-02-PLAN.md -- 수동 SQL 마이그레이션 시스템, API 공통 레이어(Envelope 응답, 유효성 검증, Swagger)
 
 ### Phase 2: 쓰기 주제 및 답안 관리
 **Goal**: 사용자가 쓰기 주제를 탐색하고, 답안을 작성/임시저장/제출/삭제하며, 과거 제출 이력을 조회할 수 있는 상태
