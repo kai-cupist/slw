@@ -14,15 +14,16 @@ import { ApiSuccessResponse } from '../interfaces/api-response.interface';
  * 에러 응답은 HttpExceptionFilter가 별도로 처리한다.
  */
 @Injectable()
-export class ResponseInterceptor<T>
-  implements NestInterceptor<T, ApiSuccessResponse<T>>
-{
+export class ResponseInterceptor<T> implements NestInterceptor<
+  T,
+  ApiSuccessResponse<T>
+> {
   intercept(
     context: ExecutionContext,
     next: CallHandler,
   ): Observable<ApiSuccessResponse<T>> {
     return next.handle().pipe(
-      map((data) => ({
+      map((data: T) => ({
         success: true as const,
         data,
       })),

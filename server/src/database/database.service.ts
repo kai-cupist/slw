@@ -1,5 +1,5 @@
 import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common';
-import { Pool, PoolClient } from 'pg';
+import { Pool, PoolClient, QueryResultRow } from 'pg';
 import { DATABASE_POOL } from './database.constants';
 
 /**
@@ -17,8 +17,11 @@ export class DatabaseService implements OnModuleDestroy {
    * @param params - 쿼리 파라미터 배열
    * @returns 결과 행 배열
    */
-  async query<T = any>(text: string, params?: unknown[]): Promise<T[]> {
-    const result = await this.pool.query(text, params);
+  async query<T extends QueryResultRow = Record<string, unknown>>(
+    text: string,
+    params?: unknown[],
+  ): Promise<T[]> {
+    const result = await this.pool.query<T>(text, params);
     return result.rows;
   }
 
@@ -29,11 +32,11 @@ export class DatabaseService implements OnModuleDestroy {
    * @param params - 쿼리 파라미터 배열
    * @returns 첫 번째 결과 행 또는 null
    */
-  async queryOne<T = any>(
+  async queryOne<T extends QueryResultRow = Record<string, unknown>>(
     text: string,
     params?: unknown[],
   ): Promise<T | null> {
-    const result = await this.pool.query(text, params);
+    const result = await this.pool.query<T>(text, params);
     return result.rows[0] ?? null;
   }
 
