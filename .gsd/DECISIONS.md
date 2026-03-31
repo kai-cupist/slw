@@ -1,0 +1,15 @@
+- pg Pool을 @Global() 커스텀 프로바이더로 등록하여 전역 주입 가능하게 함
+- connectionTimeoutMillis 5000ms로 컨테이너 시작 시 DB 준비 대기 안정성 확보
+- DatabaseService에 query/queryOne/withTransaction 3개 메서드로 Raw SQL 인터페이스 확립
+- 마이그레이션 디렉토리 fallback 로직으로 로컬/Docker 환경 모두 지원
+- HttpExceptionFilter에서 ValidationPipe 에러의 message 배열을 details 필드로 변환
+- Swagger UI를 /api-docs 경로에 설정
+- VARCHAR + CHECK constraint 사용 (PostgreSQL ENUM 대신) - 마이그레이션 시 값 추가/변경이 용이
+- Partial index로 deleted_at IS NULL 조건 적용 - 삭제된 행은 인덱스에서 제외하여 성능 최적화
+- UserIdGuard는 전역이 아닌 컨트롤러 단위 적용 - prompts는 공개 데이터이므로 가드 불필요
+- 동적 WHERE 절에 paramIndex 카운터 방식 사용 - 필터 조합에 따라 안전하게 파라미터 바인딩
+- PromptsService를 export하여 SubmissionsModule 등에서 주제 존재 확인에 재사용
+- 주제 API에 UserIdGuard 미적용 - 공개 데이터이므로 인증 불필요
+- PromptsService 주입으로 prompt_id 유효성 검증 - SubmissionsModule에서 PromptsModule import
+- soft delete 후 { deleted: true } 반환 - ResponseInterceptor가 Envelope 래핑
+- submitted 상태 답안 수정/재제출 차단 시 구체적 한국어 에러 메시지 사용

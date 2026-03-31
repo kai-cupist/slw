@@ -21,6 +21,9 @@ build/
 .DS_Store
 Thumbs.db
 
+# Agent tooling
+.bg-shell/
+
 # Logs
 *.log
 npm-debug.log*
