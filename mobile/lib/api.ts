@@ -29,10 +29,7 @@ const BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3100';
  * - X-User-Id 자동 주입: userStore에 userId가 있으면 헤더에 추가
  * - Content-Type: JSON 기본 설정
  */
-async function request<T>(
-  path: string,
-  options: RequestInit = {},
-): Promise<T> {
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const url = `${BASE_URL}${path}`;
 
   const headers: Record<string, string> = {
@@ -52,7 +49,10 @@ async function request<T>(
   });
 
   // 네트워크 레벨 에러 (non-JSON 응답 등)
-  if (!response.ok && response.headers.get('content-type')?.includes('application/json') === false) {
+  if (
+    !response.ok &&
+    response.headers.get('content-type')?.includes('application/json') === false
+  ) {
     throw new ApiError(
       'NETWORK_ERROR',
       `HTTP ${response.status}: ${response.statusText}`,

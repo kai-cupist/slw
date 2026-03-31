@@ -98,10 +98,7 @@ export default function WriteScreen() {
       await api.patch<Submission>(`/submissions/${submissionId}/submit`);
 
       // 2. 평가 요청
-      await api.post<Evaluation>(
-        `/submissions/${submissionId}/evaluate`,
-        {},
-      );
+      await api.post<Evaluation>(`/submissions/${submissionId}/evaluate`, {});
 
       // 3. 결과 화면으로 이동
       router.replace(`/evaluation/${submissionId}`);
@@ -169,7 +166,9 @@ export default function WriteScreen() {
       {!isSubmitted ? (
         <View style={styles.footer}>
           {hasUnsaved ? (
-            <Text style={styles.unsavedHint}>저장되지 않은 변경이 있습니다</Text>
+            <Text style={styles.unsavedHint}>
+              저장되지 않은 변경이 있습니다
+            </Text>
           ) : null}
 
           <View style={styles.buttonRow}>

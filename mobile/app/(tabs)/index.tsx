@@ -68,10 +68,7 @@ export default function PromptsScreen() {
   const renderItem = useCallback(
     ({ item }: { item: Prompt }) => (
       <Pressable
-        style={({ pressed }) => [
-          styles.card,
-          pressed && styles.cardPressed,
-        ]}
+        style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
         onPress={() => router.push(`/prompts/${item.id}`)}
       >
         <Text style={styles.cardTitle}>{item.title}</Text>

@@ -103,7 +103,9 @@ function TrendSection() {
         <View key={`${t.evaluated_at}-${idx}`} style={styles.trendItem}>
           <View style={styles.trendHeader}>
             <Text style={styles.trendDate}>{formatDate(t.evaluated_at)}</Text>
-            <Text style={[styles.trendTotal, { color: scoreColor(t.total_score) }]}>
+            <Text
+              style={[styles.trendTotal, { color: scoreColor(t.total_score) }]}
+            >
               {t.total_score}점
             </Text>
           </View>
@@ -155,10 +157,7 @@ export default function HistoryScreen() {
       const diffColor = DIFFICULTY_COLORS[item.prompt_difficulty] ?? '#9E9E9E';
       return (
         <Pressable
-          style={({ pressed }) => [
-            styles.card,
-            pressed && styles.cardPressed,
-          ]}
+          style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
           onPress={() => router.push(`/evaluation/${item.submission_id}`)}
         >
           <View style={styles.cardTop}>
@@ -166,7 +165,10 @@ export default function HistoryScreen() {
               {item.prompt_title}
             </Text>
             <Text
-              style={[styles.cardScore, { color: scoreColor(item.total_score) }]}
+              style={[
+                styles.cardScore,
+                { color: scoreColor(item.total_score) },
+              ]}
             >
               {item.total_score}점
             </Text>
@@ -175,9 +177,7 @@ export default function HistoryScreen() {
             <View style={[styles.diffBadge, { backgroundColor: diffColor }]}>
               <Text style={styles.diffBadgeText}>{item.prompt_difficulty}</Text>
             </View>
-            <Text style={styles.cardDate}>
-              {formatDate(item.evaluated_at)}
-            </Text>
+            <Text style={styles.cardDate}>{formatDate(item.evaluated_at)}</Text>
           </View>
         </Pressable>
       );
@@ -214,7 +214,9 @@ export default function HistoryScreen() {
     return (
       <View style={styles.center}>
         <Text style={styles.emptyText}>아직 평가 이력이 없습니다.</Text>
-        <Text style={styles.emptySubtext}>주제를 선택하고 답안을 제출해 보세요.</Text>
+        <Text style={styles.emptySubtext}>
+          주제를 선택하고 답안을 제출해 보세요.
+        </Text>
       </View>
     );
   }

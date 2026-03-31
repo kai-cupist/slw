@@ -60,9 +60,7 @@ export default function PromptDetailScreen() {
       router.push(`/write/${submission.id}`);
     } catch (err) {
       const message =
-        err instanceof ApiError
-          ? err.message
-          : '답안을 생성하지 못했습니다.';
+        err instanceof ApiError ? err.message : '답안을 생성하지 못했습니다.';
       Alert.alert('오류', message);
     } finally {
       setCreating(false);
@@ -81,7 +79,9 @@ export default function PromptDetailScreen() {
   if (error || !prompt) {
     return (
       <View style={styles.center}>
-        <Text style={styles.errorText}>{error ?? '주제를 찾을 수 없습니다.'}</Text>
+        <Text style={styles.errorText}>
+          {error ?? '주제를 찾을 수 없습니다.'}
+        </Text>
         <Pressable style={styles.retryButton} onPress={fetchPrompt}>
           <Text style={styles.retryButtonText}>다시 시도</Text>
         </Pressable>

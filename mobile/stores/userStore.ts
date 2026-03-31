@@ -32,7 +32,10 @@ export const useUserStore = create<UserState>((set, get) => ({
       set({ userId, isLoaded: true });
     } catch (error) {
       // AsyncStorage 실패 시에도 인메모리 UUID로 동작하도록 폴백
-      console.error('[userStore] AsyncStorage 접근 실패, 인메모리 UUID 사용:', error);
+      console.error(
+        '[userStore] AsyncStorage 접근 실패, 인메모리 UUID 사용:',
+        error,
+      );
       set({ userId: Crypto.randomUUID(), isLoaded: true });
     }
   },

@@ -40,7 +40,10 @@ function ScoreBar({ label, score }: { label: string; score: number }) {
       <Text style={styles.scoreLabel}>{label}</Text>
       <View style={styles.barContainer}>
         <View
-          style={[styles.barFill, { width: `${widthPercent}%`, backgroundColor: color }]}
+          style={[
+            styles.barFill,
+            { width: `${widthPercent}%`, backgroundColor: color },
+          ]}
         />
       </View>
       <Text style={[styles.scoreValue, { color }]}>{score}</Text>
@@ -61,9 +64,7 @@ export default function EvaluationScreen() {
     setLoading(true);
     setError(null);
     try {
-      const data = await api.get<Evaluation>(
-        `/evaluations/${submissionId}`,
-      );
+      const data = await api.get<Evaluation>(`/evaluations/${submissionId}`);
       setEvaluation(data);
     } catch (err) {
       if (err instanceof ApiError) {
@@ -115,7 +116,12 @@ export default function EvaluationScreen() {
       {/* 총점 */}
       <View style={styles.totalCard}>
         <Text style={styles.totalLabel}>총점</Text>
-        <Text style={[styles.totalScore, { color: scoreColor(evaluation.total_score) }]}>
+        <Text
+          style={[
+            styles.totalScore,
+            { color: scoreColor(evaluation.total_score) },
+          ]}
+        >
           {evaluation.total_score}
         </Text>
         <Text style={styles.totalMax}> / 10</Text>
