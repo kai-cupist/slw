@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Crypto from 'expo-crypto';
 import { create } from 'zustand';
 
 const USER_ID_KEY = '@slw/user_id';
@@ -24,7 +25,7 @@ export const useUserStore = create<UserState>((set, get) => ({
       let userId = await AsyncStorage.getItem(USER_ID_KEY);
 
       if (!userId) {
-        userId = crypto.randomUUID();
+        userId = Crypto.randomUUID();
         await AsyncStorage.setItem(USER_ID_KEY, userId);
       }
 
@@ -32,7 +33,7 @@ export const useUserStore = create<UserState>((set, get) => ({
     } catch (error) {
       // AsyncStorage 실패 시에도 인메모리 UUID로 동작하도록 폴백
       console.error('[userStore] AsyncStorage 접근 실패, 인메모리 UUID 사용:', error);
-      set({ userId: crypto.randomUUID(), isLoaded: true });
+      set({ userId: Crypto.randomUUID(), isLoaded: true });
     }
   },
 }));
