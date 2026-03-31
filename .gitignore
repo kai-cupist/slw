@@ -59,16 +59,8 @@ coverage/
 .gsd/milestones/**/continue.md
 .gsd/milestones/**/*-CONTINUE.md
 
-# ── GSD baseline (auto-generated) ──
-*.code-workspace
+# ── 기타 ──
 .env.*
 !.env.example
-.next/
-__pycache__/
-*.pyc
-.venv/
-venv/
-target/
-vendor/
 .cache/
 tmp/
