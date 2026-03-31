@@ -78,7 +78,7 @@ Expo SDK 55 프로젝트를 `mobile/` 디렉토리에 생성하고, expo-router 
   - Estimate: 45m
   - Files: mobile/lib/api.ts, mobile/stores/userStore.ts, mobile/lib/types.ts, mobile/package.json
   - Verify: test -f mobile/lib/api.ts && test -f mobile/stores/userStore.ts && test -f mobile/lib/types.ts && cd mobile && npx tsc --noEmit
-- [ ] **T03: 주제 목록/상세 + 답안 작성/제출 화면 구현 (APP-01, APP-02)** — ## Description
+- [x] **T03: 주제 목록(FlatList+뱃지), 주제 상세(작성 시작), 답안 작성/임시저장/제출 화면 4개 라우트 구현 완료** — ## Description
 
 사용자 흐름의 전반부를 구현한다: 주제 목록 → 주제 상세 → 답안 작성 → 임시저장/제출. 앱 진입 시 userId가 로드되도록 Root Layout에서 userStore.loadUserId()를 호출한다.
 
