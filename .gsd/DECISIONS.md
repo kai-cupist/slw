@@ -13,3 +13,11 @@
 - PromptsService 주입으로 prompt_id 유효성 검증 - SubmissionsModule에서 PromptsModule import
 - soft delete 후 { deleted: true } 반환 - ResponseInterceptor가 Envelope 래핑
 - submitted 상태 답안 수정/재제출 차단 시 구체적 한국어 에러 메시지 사용
+
+---
+
+## Decisions Table
+
+| # | When | Scope | Decision | Choice | Rationale | Revisable? | Made By |
+|---|------|-------|----------|--------|-----------|------------|---------|
+| D001 | M001/S03 계획 | architecture | EvaluationsModule과 SubmissionsModule 간 결합 방식 | 별도 POST /submissions/:id/evaluate 엔드포인트를 EvaluationsController에 배치. EvaluationsModule이 SubmissionsModule을 import하여 submission 데이터에 접근. 순환 의존성 없음 (Evaluations→Submissions→Prompts 단방향). | SubmissionsService에 평가 로직을 넣으면 순환 의존(Submissions↔Evaluations) 발생. 별도 엔드포인트로 분리하면 모듈 간 결합이 최소화되고, 프론트에서 제출 후 명시적으로 평가를 요청하는 패턴이 된다. forwardRef()보다 구조적으로 깔끔하다. | Yes | agent |

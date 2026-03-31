@@ -13,5 +13,6 @@ import { SubmissionsRepository } from './submissions.repository';
   imports: [PromptsModule],
   controllers: [SubmissionsController],
   providers: [SubmissionsService, SubmissionsRepository],
+  exports: [SubmissionsService, SubmissionsRepository],
 })
 export class SubmissionsModule {}

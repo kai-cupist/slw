@@ -33,3 +33,33 @@ coverage/
 
 # Expo
 .expo/
+
+# ── GSD runtime (git 불필요) ──
+.gsd/gsd.db
+.gsd/gsd.db-wal
+.gsd/gsd.db-shm
+.gsd/auto.lock
+.gsd/runtime/
+.gsd/activity/
+.gsd/journal/
+.gsd/event-log.jsonl
+.gsd/state-manifest.json
+.gsd/metrics.json
+.gsd/STATE.md
+.gsd/browser-state/
+.gsd/browser-baselines/
+.gsd/worktrees/
+
+# ── GSD baseline (auto-generated) ──
+*.code-workspace
+.env.*
+!.env.example
+.next/
+__pycache__/
+*.pyc
+.venv/
+venv/
+target/
+vendor/
+.cache/
+tmp/
