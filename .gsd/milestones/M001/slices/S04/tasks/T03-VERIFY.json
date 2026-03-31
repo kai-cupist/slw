@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T03",
+  "unitId": "M001/S04/T03",
+  "timestamp": 1774970344308,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "test -f mobile/app/prompts/[id].tsx",
+      "exitCode": 0,
+      "durationMs": 33,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f mobile/app/write/[submissionId].tsx",
+      "exitCode": 0,
+      "durationMs": 29,
+      "verdict": "pass"
+    },
+    {
+      "command": "cd mobile",
+      "exitCode": 0,
+      "durationMs": 30,
+      "verdict": "pass"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 1,
+      "durationMs": 670,
+      "verdict": "fail"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2
+}

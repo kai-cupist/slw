@@ -136,7 +136,7 @@ app/write/[submissionId].tsx → 답안 작성/수정 (PATCH /submissions/:id, P
   - Estimate: 1h30m
   - Files: mobile/app/_layout.tsx, mobile/app/(tabs)/index.tsx, mobile/app/prompts/[id].tsx, mobile/app/write/[submissionId].tsx
   - Verify: test -f mobile/app/prompts/[id].tsx && test -f mobile/app/write/[submissionId].tsx && cd mobile && npx tsc --noEmit
-- [ ] **T04: 평가 결과 + 이력 화면 구현 + 전체 흐름 E2E 검증 (APP-03, APP-04)** — ## Description
+- [x] **T04: 평가 결과 화면(4항목 점수 프로그레스 바 + 피드백)과 이력 목록(FlatList + 점수 추이 미니 바) 2개 화면 구현 및 라우트 등록 완료** — ## Description
 
 사용자 흐름의 후반부를 구현하고 M001 전체 흐름을 검증한다: 평가 결과 확인 + 이력 목록 + 점수 추이. 이 태스크가 완료되면 앱에서 "주제 선택 → 답안 작성 → 제출 → AI 평가 → 피드백 확인 → 이력 조회" 전체 흐름이 동작한다.
 

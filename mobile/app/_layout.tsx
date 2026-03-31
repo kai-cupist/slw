@@ -35,6 +35,10 @@ export default function RootLayout() {
           name="write/[submissionId]"
           options={{ title: '답안 작성', headerBackTitle: '뒤로' }}
         />
+        <Stack.Screen
+          name="evaluation/[submissionId]"
+          options={{ title: '평가 결과', headerBackTitle: '뒤로' }}
+        />
       </Stack>
       <StatusBar style="auto" />
     </ThemeProvider>
