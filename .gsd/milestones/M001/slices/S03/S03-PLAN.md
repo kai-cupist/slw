@@ -22,7 +22,7 @@ SubmissionsModule 변경: SubmissionsService와 SubmissionsRepository를 export�
   - Estimate: 1h
   - Files: migrations/004_create_evaluations.sql, migrations/005_add_evaluated_status.sql, server/package.json, server/src/llm/llm.module.ts, server/src/llm/llm.service.ts, server/src/submissions/submissions.module.ts, .env
   - Verify: cd server && npx tsc --noEmit && echo '타입 체크 통과' && grep -q 'groq-sdk' package.json && echo 'groq-sdk 설치 확인' && test -f ../migrations/004_create_evaluations.sql && test -f ../migrations/005_add_evaluated_status.sql && echo '마이그레이션 파일 존재 확인'
-- [ ] **T02: EvaluationsModule 코어 — 평가 요청 API + 결과 저장 + 단건 조회** — 핵심 가치를 구현한다: submitted 답안에 대해 LLM 평가를 수행하고 결과를 DB에 저장하는 POST /submissions/:id/evaluate 엔드포인트와, 저장된 평가 결과를 조회하는 GET /evaluations/:submissionId 엔드포인트.
+- [x] **T02: EvaluationsModule 구현 — POST /submissions/:id/evaluate(LLM 평가+DB 저장+상태 전환)과 GET /evaluations/:submissionId(결과 조회) 엔드포인트 완성** — 핵심 가치를 구현한다: submitted 답안에 대해 LLM 평가를 수행하고 결과를 DB에 저장하는 POST /submissions/:id/evaluate 엔드포인트와, 저장된 평가 결과를 조회하는 GET /evaluations/:submissionId 엔드포인트.
 
 구현할 파일:
 1. `evaluations.repository.ts` — evaluations 테이블 Raw SQL (create, findBySubmissionId)
