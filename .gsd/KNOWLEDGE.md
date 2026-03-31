@@ -23,3 +23,21 @@
 - **발견:** M001/S01/T01
 - **내용:** DatabaseModule에 `@Global()` 데코레이터를 적용하면 다른 모듈에서 import 없이 DatabaseService를 주입할 수 있다. 단, exports에 DatabaseService를 명시해야 한다.
 - **영향:** 모든 Feature 모듈에서 DatabaseModule import 불필요
+
+## K005 — NestJS 컨트롤러 라우트 충돌 방지
+
+- **발견:** M001/S03/T03
+- **내용:** 동일 컨트롤러에서 `@Get('history')`와 `@Get(':submissionId')` 같은 구체적 경로와 파라미터 경로가 공존할 때, 구체적 경로를 반드시 먼저 선언해야 한다. Express가 선언 순서대로 매칭하기 때문에 파라미터 경로가 먼저 오면 `history`를 submissionId로 인식한다.
+- **영향:** 라우트가 의도하지 않은 핸들러로 매칭되는 버그 방지
+
+## K006 — Repository에 PoolClient 선택적 파라미터로 트랜잭션 지원
+
+- **발견:** M001/S03/T02
+- **내용:** Repository 메서드에 `client?: PoolClient` 파라미터를 추가하면, 트랜잭션 내에서는 트랜잭션 client를 전달하고, 일반 호출에서는 DatabaseService.query()를 사용하는 패턴으로 트랜잭션 안/밖 모두 지원할 수 있다.
+- **영향:** 서비스 레이어에서 트랜잭션 경계를 유연하게 제어 가능
+
+## K007 — Groq JSON Object Mode 사용 시 프롬프트 내 스키마 명시 필수
+
+- **발견:** M001/S03/T01
+- **내용:** `response_format: { type: 'json_object' }`를 설정하더라도 프롬프트에 JSON 스키마를 명시적으로 기술해야 원하는 구조의 응답을 받을 수 있다. 스키마 없이 json_object만 설정하면 비결정적 구조가 반환된다. 응답 파싱 후 4항목 점수 범위(1~10)와 필수 필드 존재를 수동 검증해야 한다.
+- **영향:** LLM 응답 파싱 실패율 감소

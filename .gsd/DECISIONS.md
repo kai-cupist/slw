@@ -20,4 +20,7 @@
 
 | # | When | Scope | Decision | Choice | Rationale | Revisable? | Made By |
 |---|------|-------|----------|--------|-----------|------------|---------|
-| D001 | M001/S03 계획 | architecture | EvaluationsModule과 SubmissionsModule 간 결합 방식 | 별도 POST /submissions/:id/evaluate 엔드포인트를 EvaluationsController에 배치. EvaluationsModule이 SubmissionsModule을 import하여 submission 데이터에 접근. 순환 의존성 없음 (Evaluations→Submissions→Prompts 단방향). | SubmissionsService에 평가 로직을 넣으면 순환 의존(Submissions↔Evaluations) 발생. 별도 엔드포인트로 분리하면 모듈 간 결합이 최소화되고, 프론트에서 제출 후 명시적으로 평가를 요청하는 패턴이 된다. forwardRef()보다 구조적으로 깔끔하다. | Yes | agent |
+| D001 | M001/S03 계획 | architecture | LLM API 호출과 DB 트랜잭션 분리 | LLM API 호출은 트랜잭션 밖에서, DB 저장(evaluations INSERT + submissions UPDATE)은 트랜잭션 안에서 처리 | LLM API 호출은 외부 I/O로 2~5초 소요되며, 트랜잭션 안에서 실행하면 그 동안 DB 커넥션을 점유한다. API 호출 결과를 받은 후 DB 쓰기만 트랜잭션으로 묶으면 커넥션 점유 시간이 최소화되고, LLM 실패 시 DB 변경 없이 깔끔하게 에러를 반환할 수 있다. | Yes | agent |
+| D002 | M001/S03/T02 | architecture | LLM 호출과 DB 저장의 트랜잭션 경계 | LLM 호출은 트랜잭션 밖에서, DB 저장(evaluations INSERT + submissions UPDATE)은 트랜잭션 안에서 처리 | 외부 API 호출을 트랜잭션 안에 넣으면 DB 커넥션을 오래 점유하고, 타임아웃 시 롤백 비용이 커진다. LLM 호출 후 결과를 받은 뒤에만 DB에 쓰면, API 실패 시 DB 상태가 깨끗하게 유지된다. | Yes | agent |
+| D003 | M001/S03/T02 | architecture | 중복 평가 요청 처리 전략 | 중복 평가 요청 시 에러 대신 기존 결과 반환으로 멱등성 확보 | 네트워크 불안정 시 클라이언트가 재시도할 수 있으므로, 이미 evaluated된 답안에 대해 409 에러를 반환하는 대신 기존 결과를 반환하면 클라이언트 로직이 단순해지고 무료 API 호출 한도를 절약한다. | Yes | agent |
+| D004 | M001/S03/T03 | pattern | NestJS 컨트롤러 라우트 선언 순서 | 구체적 경로(/history, /scores/trend)를 파라미터 경로(/:submissionId)보다 먼저 선언하여 라우트 충돌 방지 | NestJS(Express)는 라우트를 선언 순서대로 매칭한다. /:submissionId가 먼저 선언되면 /history를 submissionId로 인식하여 의도하지 않은 핸들러가 호출된다. 구체적 경로를 먼저 선언하면 이 문제를 구조적으로 방지할 수 있다. | Yes | agent |

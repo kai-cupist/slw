@@ -24,9 +24,15 @@
 
 ### Active
 
-- [ ] 외부 LLM API를 호출하여 텍스트를 평가
-- [ ] 점수와 상세 피드백을 사용자에게 반환
-- [ ] 과거 제출 내역과 점수 추이를 확인
+- [ ] Expo 앱에서 전체 사용자 흐름 동작 (주제 선택 → 작성 → 제출 → 평가 → 이력)
+
+### Recently Validated (Phase 3 — AI 평가)
+
+- ✓ 외부 LLM API(Groq)를 호출하여 텍스트를 평가 — Phase 3
+- ✓ 문법/논리/표현력/주제 적절성 4항목 점수와 상세 피드백 반환 — Phase 3
+- ✓ LLM 호출 실패 시 재시도 및 적절한 에러 응답 — Phase 3
+- ✓ 평가 결과(점수, 피드백, LLM 원본 응답)를 DB에 저장 — Phase 3
+- ✓ 과거 평가 이력과 점수 추이 조회 — Phase 3
 
 ### Out of Scope
 
@@ -83,4 +89,4 @@ This document evolves at phase transitions and milestone boundaries.
 
 ---
 
-_Last updated: 2026-03-30 after Phase 2 completion_
+_Last updated: 2026-03-31 after Phase 3 (AI 평가) completion_

@@ -35,20 +35,29 @@ coverage/
 .expo/
 
 # ── GSD runtime (git 불필요) ──
+# SQLite DB (런타임 캐시, 디스크 아티팩트에서 재생성)
 .gsd/gsd.db
 .gsd/gsd.db-wal
 .gsd/gsd.db-shm
+# 세션/런타임 파일
 .gsd/auto.lock
+.gsd/completed-units.json
+.gsd/STATE.md
+.gsd/metrics.json
+.gsd/state-manifest.json
+.gsd/event-log.jsonl
+# 런타임 디렉토리
 .gsd/runtime/
 .gsd/activity/
 .gsd/journal/
-.gsd/event-log.jsonl
-.gsd/state-manifest.json
-.gsd/metrics.json
-.gsd/STATE.md
+.gsd/worktrees/
+.gsd/parallel/
+.gsd/reports/
 .gsd/browser-state/
 .gsd/browser-baselines/
-.gsd/worktrees/
+# 인터럽트 복구 마커
+.gsd/milestones/**/continue.md
+.gsd/milestones/**/*-CONTINUE.md
 
 # ── GSD baseline (auto-generated) ──
 *.code-workspace
