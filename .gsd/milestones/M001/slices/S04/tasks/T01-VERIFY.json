@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M001/S04/T01",
+  "timestamp": 1774970012652,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "test -f mobile/app/_layout.tsx",
+      "exitCode": 0,
+      "durationMs": 37,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f mobile/app/(tabs)/_layout.tsx",
+      "exitCode": 2,
+      "durationMs": 34,
+      "verdict": "fail"
+    },
+    {
+      "command": "grep -q 'enableCors' server/src/main.ts",
+      "exitCode": 0,
+      "durationMs": 37,
+      "verdict": "pass"
+    },
+    {
+      "command": "cd mobile",
+      "exitCode": 0,
+      "durationMs": 35,
+      "verdict": "pass"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 1,
+      "durationMs": 744,
+      "verdict": "fail"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2
+}

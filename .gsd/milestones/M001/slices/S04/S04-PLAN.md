@@ -38,7 +38,7 @@ Expo SDK 55 프로젝트를 `mobile/` 디렉토리에 생성하고, expo-router 
   - Estimate: 1h
   - Files: mobile/package.json, mobile/app/_layout.tsx, mobile/app/(tabs)/_layout.tsx, mobile/app/(tabs)/index.tsx, mobile/app/(tabs)/history.tsx, mobile/.env, server/src/main.ts, .gitignore
   - Verify: test -f mobile/app/_layout.tsx && test -f mobile/app/(tabs)/_layout.tsx && grep -q 'enableCors' server/src/main.ts && cd mobile && npx tsc --noEmit
-- [ ] **T02: API 클라이언트 모듈 + Zustand userStore + userId 영구 관리** — ## Description
+- [x] **T02: 서버 API envelope 파싱·X-User-Id 자동 주입하는 api 모듈, AsyncStorage 연동 Zustand userStore, 서버 엔티티 미러링 타입을 구현 완료** — ## Description
 
 서버 API와 통신하는 공통 클라이언트 모듈(`lib/api.ts`)과 사용자 식별을 위한 Zustand 스토어(`stores/userStore.ts`)를 구현한다. 앱 최초 실행 시 UUID를 생성하여 AsyncStorage에 영구 저장하고, API 요청마다 X-User-Id 헤더를 자동 주입한다.
 
