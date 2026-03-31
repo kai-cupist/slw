@@ -8,6 +8,9 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // CORS 활성화 — 모바일 앱에서 API 호출 허용
+  app.enableCors();
+
   // 전역 ValidationPipe - 유효성 검증 실패 시 400 에러로 필드별 에러 메시지 반환
   app.useGlobalPipes(
     new ValidationPipe({

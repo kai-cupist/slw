@@ -29,8 +29,13 @@ npm-debug.log*
 # Coverage
 coverage/
 
-# Expo
+# Expo / React Native
 .expo/
+ios/
+android/
+*.jsbundle
+*.hbc
+web-build/
 
 # ── GSD runtime (git 불필요) ──
 # SQLite DB (런타임 캐시, 디스크 아티팩트에서 재생성)
@@ -62,3 +67,13 @@ coverage/
 !.env.example
 .cache/
 tmp/
+
+# ── GSD baseline (auto-generated) ──
+*.code-workspace
+.next/
+__pycache__/
+*.pyc
+.venv/
+venv/
+target/
+vendor/
