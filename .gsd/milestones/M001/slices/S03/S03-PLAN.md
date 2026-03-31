@@ -53,7 +53,7 @@ LLM 호출 실패/파싱 실패 처리:
   - Estimate: 1h30m
   - Files: server/src/evaluations/evaluations.module.ts, server/src/evaluations/evaluations.controller.ts, server/src/evaluations/evaluations.service.ts, server/src/evaluations/evaluations.repository.ts, server/src/app.module.ts
   - Verify: docker compose up -d --build && sleep 10 && curl -s http://localhost:3100/health | grep -q 'ok' && echo '서버 정상' && curl -s -X POST http://localhost:3100/submissions -H 'X-User-Id: test-user-s03' -H 'Content-Type: application/json' -d '{"prompt_id":1,"content":"오늘은 날씨가 좋아서 공원에 산책을 갔다. 봄꽃이 피어있어서 기분이 좋았다. 새들이 노래하는 소리를 들으며 걸었다."}' | grep -q 'draft' && echo '답안 생성 확인' && export SUB_ID=$(curl -s -X POST http://localhost:3100/submissions -H 'X-User-Id: test-user-s03' -H 'Content-Type: application/json' -d '{"prompt_id":2,"content":"오늘 하루는 정말 바빴다. 아침에 일찍 일어나 운동을 하고, 점심에는 친구를 만났다."}' | python3 -c 'import sys,json; print(json.load(sys.stdin)["data"]["id"])') && curl -s -X PATCH http://localhost:3100/submissions/$SUB_ID/submit -H 'X-User-Id: test-user-s03' | grep -q 'submitted' && echo '제출 확인' && curl -s -X POST http://localhost:3100/submissions/$SUB_ID/evaluate -H 'X-User-Id: test-user-s03' | grep -q 'grammar_score' && echo '평가 성공'
-- [ ] **T03: 평가 이력 목록 + 점수 추이 API 구현 및 전체 슬라이스 검증** — HIST-01, HIST-02 요구사항을 구현한다.
+- [x] **T03: GET /evaluations/history(페이지네이션 이력 조회)와 GET /evaluations/scores/trend(점수 추이) 엔드포인트 구현 및 전체 E2E 플로우 검증 완료** — HIST-01, HIST-02 요구사항을 구현한다.
 
 1. GET /evaluations/history — 사용자의 평가 이력 목록 (페이지네이션)
    - evaluations JOIN submissions JOIN prompts

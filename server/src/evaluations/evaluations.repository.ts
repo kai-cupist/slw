@@ -102,4 +102,122 @@ export class EvaluationsRepository {
       [submissionId],
     );
   }
+
+  /**
+   * 사용자의 평가 이력 목록을 페이지네이션으로 조회한다.
+   * evaluations → submissions → prompts 3테이블 JOIN으로
+   * 주제 정보(title, category, difficulty) + 점수 + 평가일을 반환한다.
+   *
+   * @param userId - 사용자 ID
+   * @param offset - 건너뛸 행 수
+   * @param limit - 조회할 최대 행 수
+   * @returns 평가 이력 배열과 총 건수
+   */
+  async findHistoryByUser(
+    userId: string,
+    offset: number,
+    limit: number,
+  ): Promise<{ rows: EvaluationHistory[]; total: number }> {
+    const whereClause = `WHERE s.user_id = $1 AND s.deleted_at IS NULL`;
+
+    const countQuery = `
+      SELECT COUNT(*) as total
+      FROM evaluations e
+      JOIN submissions s ON e.submission_id = s.id
+      ${whereClause}
+    `;
+
+    const dataQuery = `
+      SELECT e.id, e.submission_id, e.grammar_score, e.logic_score,
+             e.expression_score, e.relevance_score, e.total_score,
+             e.evaluated_at,
+             p.title as prompt_title, p.category as prompt_category,
+             p.difficulty as prompt_difficulty
+      FROM evaluations e
+      JOIN submissions s ON e.submission_id = s.id
+      JOIN prompts p ON s.prompt_id = p.id
+      ${whereClause}
+      ORDER BY e.evaluated_at DESC
+      LIMIT $2 OFFSET $3
+    `;
+
+    const [countResult, rows] = await Promise.all([
+      this.db.queryOne<{ total: string }>(countQuery, [userId]),
+      this.db.query<EvaluationHistory>(dataQuery, [userId, limit, offset]),
+    ]);
+
+    return { rows, total: parseInt(countResult?.total ?? '0', 10) };
+  }
+
+  /**
+   * 사용자의 점수 추이를 조회한다.
+   * 평가일 오름차순(과거→최근)으로 점수 데이터를 반환한다.
+   * limit을 지정하면 최근 N건만 반환한다.
+   *
+   * @param userId - 사용자 ID
+   * @param limit - 조회할 최근 건수 (미지정 시 전체)
+   * @returns 점수 추이 배열
+   */
+  async findScoreTrendByUser(
+    userId: string,
+    limit?: number,
+  ): Promise<ScoreTrend[]> {
+    const params: unknown[] = [userId];
+    let paramIndex = 2;
+
+    // 최근 N건을 오름차순으로 가져오기 위해 서브쿼리로 DESC 정렬 후 다시 ASC 정렬
+    let limitClause = '';
+    if (limit) {
+      limitClause = `LIMIT $${paramIndex}`;
+      params.push(limit);
+    }
+
+    const sql = `
+      SELECT evaluated_at, total_score, grammar_score,
+             logic_score, expression_score, relevance_score
+      FROM (
+        SELECT e.evaluated_at, e.total_score, e.grammar_score,
+               e.logic_score, e.expression_score, e.relevance_score
+        FROM evaluations e
+        JOIN submissions s ON e.submission_id = s.id
+        WHERE s.user_id = $1 AND s.deleted_at IS NULL
+        ORDER BY e.evaluated_at DESC
+        ${limitClause}
+      ) sub
+      ORDER BY evaluated_at ASC
+    `;
+
+    return this.db.query<ScoreTrend>(sql, params);
+  }
+}
+
+/**
+ * 평가 이력 항목 인터페이스
+ * evaluations + submissions + prompts JOIN 결과의 일부 컬럼
+ */
+export interface EvaluationHistory {
+  id: number;
+  submission_id: number;
+  grammar_score: number;
+  logic_score: number;
+  expression_score: number;
+  relevance_score: number;
+  total_score: number;
+  evaluated_at: Date;
+  prompt_title: string;
+  prompt_category: string;
+  prompt_difficulty: string;
+}
+
+/**
+ * 점수 추이 인터페이스
+ * 날짜별 점수 데이터 (프론트엔드에서 차트로 렌더링)
+ */
+export interface ScoreTrend {
+  evaluated_at: Date;
+  total_score: number;
+  grammar_score: number;
+  logic_score: number;
+  expression_score: number;
+  relevance_score: number;
 }

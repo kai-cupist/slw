@@ -12,7 +12,15 @@ import {
   SubmissionsRepository,
   SubmissionWithPrompt,
 } from '../submissions/submissions.repository';
-import { Evaluation, EvaluationsRepository } from './evaluations.repository';
+import {
+  Evaluation,
+  EvaluationHistory,
+  EvaluationsRepository,
+  ScoreTrend,
+} from './evaluations.repository';
+import { PaginatedResponse } from '../common/interfaces/paginated.interface';
+import { GetEvaluationHistoryDto } from './dto/get-evaluation-history.dto';
+import { GetScoreTrendDto } from './dto/get-score-trend.dto';
 
 /**
  * 평가 서비스
@@ -190,5 +198,51 @@ export class EvaluationsService {
       );
       throw new BadGatewayException(`AI 평가에 실패했습니다: ${message}`);
     }
+  }
+
+  /**
+   * 사용자의 평가 이력 목록을 조회한다.
+   * evaluations + submissions + prompts JOIN으로 주제 정보와 점수를 함께 반환한다.
+   *
+   * @param userId - 사용자 ID
+   * @param dto - 페이지네이션 파라미터
+   * @returns 페이지네이션된 평가 이력
+   */
+  async getHistory(
+    userId: string,
+    dto: GetEvaluationHistoryDto,
+  ): Promise<PaginatedResponse<EvaluationHistory>> {
+    const page = dto.page ?? 1;
+    const limit = dto.limit ?? 10;
+    const offset = (page - 1) * limit;
+
+    const { rows, total } =
+      await this.evaluationsRepository.findHistoryByUser(userId, offset, limit);
+
+    return {
+      items: rows,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  /**
+   * 사용자의 점수 추이를 조회한다.
+   * 평가일 오름차순으로 점수 데이터를 반환한다.
+   *
+   * @param userId - 사용자 ID
+   * @param dto - limit 파라미터 (최근 N건)
+   * @returns 점수 추이 배열
+   */
+  async getScoreTrend(
+    userId: string,
+    dto: GetScoreTrendDto,
+  ): Promise<ScoreTrend[]> {
+    return this.evaluationsRepository.findScoreTrendByUser(
+      userId,
+      dto.limit,
+    );
   }
 }

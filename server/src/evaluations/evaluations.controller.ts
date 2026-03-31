@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Param,
+  Query,
   ParseIntPipe,
   UseGuards,
 } from '@nestjs/common';
@@ -10,6 +11,8 @@ import { ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserIdGuard } from '../common/guards/user-id.guard';
 import { UserId } from '../common/decorators/user-id.decorator';
 import { EvaluationsService } from './evaluations.service';
+import { GetEvaluationHistoryDto } from './dto/get-evaluation-history.dto';
+import { GetScoreTrendDto } from './dto/get-score-trend.dto';
 
 /**
  * 평가 컨트롤러
@@ -43,8 +46,36 @@ export class EvaluationsController {
   }
 
   /**
+   * 사용자의 평가 이력 목록을 조회한다.
+   * 주제 정보(제목, 카테고리, 난이도)와 점수를 함께 반환한다.
+   * 구체적 경로(/history)를 파라미터 경로(/:submissionId)보다 먼저 선언하여 라우트 충돌을 방지한다.
+   */
+  @Get('evaluations/history')
+  @ApiOperation({ summary: '평가 이력 목록 조회' })
+  async getHistory(
+    @UserId() userId: string,
+    @Query() dto: GetEvaluationHistoryDto,
+  ) {
+    return this.evaluationsService.getHistory(userId, dto);
+  }
+
+  /**
+   * 사용자의 점수 추이를 조회한다.
+   * 평가일 오름차순으로 점수 데이터를 반환한다.
+   */
+  @Get('evaluations/scores/trend')
+  @ApiOperation({ summary: '점수 추이 조회' })
+  async getScoreTrend(
+    @UserId() userId: string,
+    @Query() dto: GetScoreTrendDto,
+  ) {
+    return this.evaluationsService.getScoreTrend(userId, dto);
+  }
+
+  /**
    * 답안의 평가 결과를 조회한다.
    * 평가가 완료된 답안만 조회할 수 있다.
+   * 파라미터 경로는 구체적 경로들 뒤에 선언하여 "history", "scores"가 :submissionId로 매칭되지 않도록 한다.
    */
   @Get('evaluations/:submissionId')
   @ApiOperation({ summary: '평가 결과 조회' })
