@@ -61,8 +61,7 @@ export class LlmService {
     });
 
     this.model =
-      this.configService.get<string>('LLM_MODEL') ??
-      'llama-3.3-70b-versatile';
+      this.configService.get<string>('LLM_MODEL') ?? 'llama-3.3-70b-versatile';
 
     this.logger.log(`LLM 서비스 초기화 완료 (모델: ${this.model})`);
   }
@@ -80,9 +79,16 @@ export class LlmService {
     promptTitle: string,
     promptCategory: string,
     content: string,
-  ): Promise<{ result: EvaluationResult; rawResponse: Record<string, unknown> }> {
+  ): Promise<{
+    result: EvaluationResult;
+    rawResponse: Record<string, unknown>;
+  }> {
     const systemPrompt = this.buildSystemPrompt();
-    const userPrompt = this.buildUserPrompt(promptTitle, promptCategory, content);
+    const userPrompt = this.buildUserPrompt(
+      promptTitle,
+      promptCategory,
+      content,
+    );
 
     // JSON 파싱 실패 시 1회 재시도 (총 최대 2회 시도)
     let lastError: Error | null = null;
@@ -109,7 +115,7 @@ export class LlmService {
 
         this.logger.log(
           `평가 완료 — 총점: ${result.total_score}, 모델: ${completion.model}, ` +
-          `토큰: ${completion.usage?.total_tokens ?? 'N/A'}`,
+            `토큰: ${completion.usage?.total_tokens ?? 'N/A'}`,
         );
 
         return { result, rawResponse: parsed };
@@ -206,27 +212,31 @@ ${content}`;
     for (const field of scoreFields) {
       const value = parsed[field];
       if (typeof value !== 'number' || !Number.isInteger(value)) {
-        throw new Error(`${field} 필드가 정수가 아닙니다: ${value}`);
+        throw new Error(`${field} 필드가 정수가 아닙니다: ${String(value)}`);
       }
       if (value < 1 || value > 10) {
-        throw new Error(`${field} 값이 범위(1~10)를 벗어났습니다: ${value}`);
+        throw new Error(
+          `${field} 값이 범위(1~10)를 벗어났습니다: ${String(value)}`,
+        );
       }
     }
 
     // total_score 검증 (LLM이 계산한 값)
     const totalScore = parsed.total_score;
     if (typeof totalScore !== 'number') {
-      throw new Error(`total_score 필드가 숫자가 아닙니다: ${totalScore}`);
+      throw new Error(
+        `total_score 필드가 숫자가 아닙니다: ${String(totalScore)}`,
+      );
     }
 
     // total_score를 직접 계산하여 LLM 계산 오류 보정
     const calculatedTotal =
       Math.round(
-        ((parsed.grammar_score as number) +
+        (((parsed.grammar_score as number) +
           (parsed.logic_score as number) +
           (parsed.expression_score as number) +
           (parsed.relevance_score as number)) /
-          4 *
+          4) *
           10,
       ) / 10;
 
@@ -247,7 +257,9 @@ ${content}`;
 
     for (const field of feedbackFields) {
       if (typeof feedbackObj[field] !== 'string' || !feedbackObj[field]) {
-        throw new Error(`feedback.${field} 필드가 비어있거나 문자열이 아닙니다`);
+        throw new Error(
+          `feedback.${field} 필드가 비어있거나 문자열이 아닙니다`,
+        );
       }
     }
 

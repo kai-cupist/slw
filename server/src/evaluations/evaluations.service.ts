@@ -216,8 +216,11 @@ export class EvaluationsService {
     const limit = dto.limit ?? 10;
     const offset = (page - 1) * limit;
 
-    const { rows, total } =
-      await this.evaluationsRepository.findHistoryByUser(userId, offset, limit);
+    const { rows, total } = await this.evaluationsRepository.findHistoryByUser(
+      userId,
+      offset,
+      limit,
+    );
 
     return {
       items: rows,
@@ -240,9 +243,6 @@ export class EvaluationsService {
     userId: string,
     dto: GetScoreTrendDto,
   ): Promise<ScoreTrend[]> {
-    return this.evaluationsRepository.findScoreTrendByUser(
-      userId,
-      dto.limit,
-    );
+    return this.evaluationsRepository.findScoreTrendByUser(userId, dto.limit);
   }
 }

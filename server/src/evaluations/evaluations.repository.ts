@@ -163,7 +163,7 @@ export class EvaluationsRepository {
     limit?: number,
   ): Promise<ScoreTrend[]> {
     const params: unknown[] = [userId];
-    let paramIndex = 2;
+    const paramIndex = 2;
 
     // 최근 N건을 오름차순으로 가져오기 위해 서브쿼리로 DESC 정렬 후 다시 ASC 정렬
     let limitClause = '';
