@@ -100,6 +100,7 @@ export default function HistoryScreen() {
   }, [isFetchingNextPage]);
 
   const renderRightActions = useCallback(
+    // eslint-disable-next-line react/display-name
     (item: EvaluationHistory) => () => (
       <Pressable
         style={[
