@@ -56,9 +56,12 @@ tmp/
 .gsd/metrics.json
 .gsd/state-manifest.json
 .gsd/event-log.jsonl
+.gsd/doctor-history.jsonl
+.gsd/DISCUSSION-MANIFEST.json
 .gsd/runtime/
 .gsd/activity/
 .gsd/journal/
+.gsd/forensics/
 .gsd/worktrees/
 .gsd/parallel/
 .gsd/reports/
