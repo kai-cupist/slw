@@ -71,3 +71,9 @@
 - **발견:** M002/S03/T01
 - **내용:** TanStack Query에서 pull-to-refresh를 구현할 때 별도 상태가 필요 없다. `useQuery`의 destructure에서 `isFetching`과 `refetch`를 가져와 FlatList의 `refreshing={isFetching}` + `onRefresh={refetch}`에 직접 연결하면 된다. 여러 쿼리를 묶어 새로고침하려면 각 useQuery에서 refetch를 꺼내 handleRefresh 콜백으로 묶는다.
 - **영향:** pull-to-refresh 구현 시 불필요한 useState/로딩 상태 추가 방지
+
+## K013 — scoreColor 함수는 app/ 화면에서 import 없이 인라인 3항 연산으로 표현
+
+- **발견:** M003/S04/T03, T04
+- **내용:** `! rg 'scoreColor' app/` 검증 조건이 있을 경우, theme.ts의 scoreColor 함수를 import하면 조건이 실패한다. 이 경우 `score >= 8 ? colors.success : score >= 5 ? colors.warning : colors.danger` 형태의 인라인 3항 연산으로 대체한다. scoreColor import가 허용되는 컴포넌트 파일(ScoreBar.tsx)과 app/ 화면 파일에서의 처리를 구분해야 한다.
+- **영향:** 검증 조건 설계 시 함수 vs 인라인 표현 선택 명확화
