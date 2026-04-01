@@ -11,22 +11,14 @@ import {
 } from 'react-native';
 import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 
-import { useEvaluationHistory, useScoreTrend } from '../../lib/hooks/queries';
+import { DifficultyBadge } from '../../components/Badge';
+import { ErrorView } from '../../components/ErrorView';
+import { LoadingView } from '../../components/LoadingView';
+import { ScoreBar } from '../../components/ScoreBar';
 import { useDeleteSubmission } from '../../lib/hooks/mutations';
+import { useEvaluationHistory, useScoreTrend } from '../../lib/hooks/queries';
+import { colors } from '../../lib/theme';
 import type { EvaluationHistory, ScoreTrend } from '../../lib/types';
-
-const DIFFICULTY_COLORS: Record<string, string> = {
-  beginner: '#4CAF50',
-  intermediate: '#FF9800',
-  advanced: '#F44336',
-};
-
-/** 점수 구간별 색상 */
-function scoreColor(score: number): string {
-  if (score >= 8) return '#4CAF50';
-  if (score >= 5) return '#FF9800';
-  return '#F44336';
-}
 
 /** 날짜 포맷 (YYYY.MM.DD) */
 function formatDate(isoString: string): string {
@@ -35,26 +27,6 @@ function formatDate(isoString: string): string {
   const m = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return `${y}.${m}.${day}`;
-}
-
-/** 점수 추이 아이템의 미니 바 */
-function MiniBar({ score, label }: { score: number; label: string }) {
-  const color = scoreColor(score);
-  const widthPercent = (score / 10) * 100;
-  return (
-    <View style={styles.miniBarRow}>
-      <Text style={styles.miniBarLabel}>{label}</Text>
-      <View style={styles.miniBarContainer}>
-        <View
-          style={[
-            styles.miniBarFill,
-            { width: `${widthPercent}%`, backgroundColor: color },
-          ]}
-        />
-      </View>
-      <Text style={[styles.miniBarValue, { color }]}>{score}</Text>
-    </View>
-  );
 }
 
 /** 점수 추이 섹션 */
@@ -73,16 +45,16 @@ function TrendSection() {
           <View style={styles.trendHeader}>
             <Text style={styles.trendDate}>{formatDate(t.evaluated_at)}</Text>
             <Text
-              style={[styles.trendTotal, { color: scoreColor(t.total_score) }]}
+              style={[styles.trendTotal, { color: t.total_score >= 8 ? colors.success : t.total_score >= 5 ? colors.warning : colors.danger }]}
             >
               {t.total_score}점
             </Text>
           </View>
           <View style={styles.trendBars}>
-            <MiniBar score={t.grammar_score} label="문법" />
-            <MiniBar score={t.logic_score} label="논리" />
-            <MiniBar score={t.expression_score} label="표현" />
-            <MiniBar score={t.relevance_score} label="적절" />
+            <ScoreBar score={t.grammar_score} label="문법" size="mini" />
+            <ScoreBar score={t.logic_score} label="논리" size="mini" />
+            <ScoreBar score={t.expression_score} label="표현" size="mini" />
+            <ScoreBar score={t.relevance_score} label="적절" size="mini" />
           </View>
         </View>
       ))}
@@ -130,7 +102,11 @@ export default function HistoryScreen() {
   const renderRightActions = useCallback(
     (item: EvaluationHistory) => () => (
       <Pressable
-        style={styles.deleteAction}
+        style={[
+          styles.deleteAction,
+          { opacity: deleteMutation.isPending ? 0.5 : 1 },
+        ]}
+        disabled={deleteMutation.isPending}
         onPress={() => {
           Alert.alert('삭제', '이 이력을 삭제하시겠습니까?', [
             { text: '취소', style: 'cancel' },
@@ -145,12 +121,11 @@ export default function HistoryScreen() {
         <Text style={styles.deleteActionText}>삭제</Text>
       </Pressable>
     ),
-    [deleteMutation.mutate],
+    [deleteMutation],
   );
 
   const renderItem = useCallback(
     ({ item }: { item: EvaluationHistory }) => {
-      const diffColor = DIFFICULTY_COLORS[item.prompt_difficulty] ?? '#9E9E9E';
       return (
         <ReanimatedSwipeable
           renderRightActions={renderRightActions(item)}
@@ -167,16 +142,14 @@ export default function HistoryScreen() {
               <Text
                 style={[
                   styles.cardScore,
-                  { color: scoreColor(item.total_score) },
+                  { color: item.total_score >= 8 ? colors.success : item.total_score >= 5 ? colors.warning : colors.danger },
                 ]}
               >
                 {item.total_score}점
               </Text>
             </View>
             <View style={styles.cardBottom}>
-              <View style={[styles.diffBadge, { backgroundColor: diffColor }]}>
-                <Text style={styles.diffBadgeText}>{item.prompt_difficulty}</Text>
-              </View>
+              <DifficultyBadge difficulty={item.prompt_difficulty} />
               <Text style={styles.cardDate}>{formatDate(item.evaluated_at)}</Text>
             </View>
           </Pressable>
@@ -192,23 +165,11 @@ export default function HistoryScreen() {
   );
 
   if (isLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2196F3" />
-        <Text style={styles.loadingText}>이력을 불러오는 중...</Text>
-      </View>
-    );
+    return <LoadingView text="이력을 불러오는 중..." />;
   }
 
   if (error != null) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.errorText}>{error.message}</Text>
-        <Pressable style={styles.retryButton} onPress={() => refetch()}>
-          <Text style={styles.retryButtonText}>다시 시도</Text>
-        </Pressable>
-      </View>
-    );
+    return <ErrorView message={error.message} onRetry={refetch} />;
   }
 
   if (items.length === 0) {
@@ -244,28 +205,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 14,
-    color: '#666',
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#F44336',
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  retryButton: {
-    backgroundColor: '#2196F3',
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  retryButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
   },
   emptyText: {
     fontSize: 16,
@@ -316,16 +255,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  diffBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 12,
-  },
-  diffBadgeText: {
-    fontSize: 12,
-    color: '#fff',
-    fontWeight: '500',
-  },
   cardDate: {
     fontSize: 13,
     color: '#999',
@@ -370,34 +299,6 @@ const styles = StyleSheet.create({
   },
   trendBars: {
     gap: 4,
-  },
-  // ── Mini bar ──
-  miniBarRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  miniBarLabel: {
-    width: 36,
-    fontSize: 12,
-    color: '#777',
-  },
-  miniBarContainer: {
-    flex: 1,
-    height: 6,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 3,
-    marginHorizontal: 6,
-    overflow: 'hidden',
-  },
-  miniBarFill: {
-    height: '100%',
-    borderRadius: 3,
-  },
-  miniBarValue: {
-    width: 24,
-    fontSize: 12,
-    fontWeight: '600',
-    textAlign: 'right',
   },
   footerLoader: {
     paddingVertical: 16,

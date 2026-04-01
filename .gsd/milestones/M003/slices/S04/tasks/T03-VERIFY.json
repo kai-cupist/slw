@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T03",
+  "unitId": "M003/S04/T03",
+  "timestamp": 1775027144216,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "cd mobile",
+      "exitCode": 0,
+      "durationMs": 35,
+      "verdict": "pass"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 1,
+      "durationMs": 1187,
+      "verdict": "fail"
+    },
+    {
+      "command": "! rg 'scoreColor' app/evaluation/",
+      "exitCode": 0,
+      "durationMs": 58,
+      "verdict": "pass"
+    },
+    {
+      "command": "! rg \"'#FAFAFA'\" app/write/",
+      "exitCode": 0,
+      "durationMs": 51,
+      "verdict": "pass"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2
+}

@@ -91,7 +91,7 @@
   - Estimate: 30m
   - Files: mobile/app/write/index.tsx, mobile/app/evaluation/[submissionId].tsx
   - Verify: cd mobile && npx tsc --noEmit && ! rg 'scoreColor' app/evaluation/ && ! rg "'#FAFAFA'" app/write/
-- [ ] **T04: 이력 화면 스타일 교체 + 삭제 버튼 isPending 처리** — history.tsx에서 DIFFICULTY_COLORS/scoreColor/MiniBar 인라인 정의를 제거하고 theme/Badge/ScoreBar 컴포넌트로 교체한다. 동시에 S03 follow-up인 삭제 버튼 isPending → disabled 처리를 추가한다.
+- [x] **T04: history.tsx에서 DIFFICULTY_COLORS·MiniBar 인라인 정의 제거 및 공통 컴포넌트 교체, 삭제 버튼 isPending 처리 완료** — history.tsx에서 DIFFICULTY_COLORS/scoreColor/MiniBar 인라인 정의를 제거하고 theme/Badge/ScoreBar 컴포넌트로 교체한다. 동시에 S03 follow-up인 삭제 버튼 isPending → disabled 처리를 추가한다.
 
 ## Steps
 
