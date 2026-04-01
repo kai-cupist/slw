@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 
+import { LoadingView } from '../../components/LoadingView';
 import {
   useCreateSubmission,
   useEvaluate,
@@ -20,6 +21,7 @@ import {
   useSubmitSubmission,
 } from '../../lib/hooks/mutations';
 import { useSubmission } from '../../lib/hooks/queries';
+import { colors } from '../../lib/theme';
 
 /**
  * 글쓰기 화면
@@ -52,7 +54,7 @@ export default function WriteScreen() {
       setContent(submission.content);
       lastSavedContent.current = submission.content;
     }
-  }, [submission]);
+  }, [submission?.id]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitPhase, setSubmitPhase] = useState('');
@@ -149,12 +151,7 @@ export default function WriteScreen() {
 
   // 이어 작성인데 submission 로딩 중
   if (submissionIdParam && isLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2196F3" />
-        <Text style={styles.loadingText}>답안을 불러오는 중...</Text>
-      </View>
-    );
+    return <LoadingView text="답안을 불러오는 중..." />;
   }
 
   if (submissionIdParam && !isLoading && !submission) {
@@ -185,7 +182,7 @@ export default function WriteScreen() {
           style={styles.textInput}
           multiline
           placeholder="여기에 답안을 작성하세요..."
-          placeholderTextColor="#999"
+          placeholderTextColor={colors.textMuted}
           value={content}
           onChangeText={setContent}
           editable={!isSubmitted && !isSubmitting}
@@ -212,7 +209,7 @@ export default function WriteScreen() {
               disabled={saving || isSubmitting}
             >
               {saving ? (
-                <ActivityIndicator size="small" color="#2196F3" />
+                <ActivityIndicator size="small" color={colors.primary} />
               ) : (
                 <Text style={styles.saveButtonText}>임시저장</Text>
               )}
@@ -253,14 +250,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 14,
-    color: '#666',
-  },
   errorText: {
     fontSize: 16,
-    color: '#F44336',
+    color: colors.danger,
     textAlign: 'center',
     marginBottom: 16,
   },
@@ -285,22 +277,22 @@ const styles = StyleSheet.create({
     minHeight: 300,
     fontSize: 16,
     lineHeight: 24,
-    color: '#212121',
-    backgroundColor: '#FAFAFA',
+    color: colors.textPrimary,
+    backgroundColor: colors.inputBackground,
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: colors.border,
   },
   footer: {
     padding: 16,
     paddingBottom: 32,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: colors.border,
   },
   unsavedHint: {
     fontSize: 12,
-    color: '#FF9800',
+    color: colors.warning,
     textAlign: 'center',
     marginBottom: 8,
   },
@@ -314,11 +306,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#2196F3',
-    backgroundColor: '#fff',
+    borderColor: colors.primary,
+    backgroundColor: colors.surface,
   },
   saveButtonText: {
-    color: '#2196F3',
+    color: colors.primary,
     fontSize: 16,
     fontWeight: '600',
   },
@@ -327,7 +319,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
-    backgroundColor: '#2196F3',
+    backgroundColor: colors.primary,
   },
   submitButtonText: {
     color: '#fff',

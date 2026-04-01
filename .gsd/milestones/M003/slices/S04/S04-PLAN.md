@@ -65,7 +65,7 @@
   - Estimate: 30m
   - Files: mobile/app/(tabs)/index.tsx, mobile/app/prompts/[id].tsx
   - Verify: cd mobile && npx tsc --noEmit && ! rg 'DIFFICULTY_COLORS' app/\(tabs\)/index.tsx && ! rg 'DIFFICULTY_COLORS' app/prompts/
-- [ ] **T03: 글쓰기 & 평가 화면에 theme/ScoreBar 컴포넌트 적용** — write/index.tsx와 evaluation/[submissionId].tsx에서 하드코딩된 색상과 인라인 컴포넌트를 theme와 공통 컴포넌트로 교체한다.
+- [x] **T03: evaluation/[submissionId].tsx의 인라인 ScoreBar·scoreColor를 공통 컴포넌트로 교체하고 write/index.tsx의 하드코딩 색상을 theme.colors로 전환했다** — write/index.tsx와 evaluation/[submissionId].tsx에서 하드코딩된 색상과 인라인 컴포넌트를 theme와 공통 컴포넌트로 교체한다.
 
 ## Steps
 

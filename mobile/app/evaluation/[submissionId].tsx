@@ -1,7 +1,6 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import {
-  ActivityIndicator,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -9,7 +8,10 @@ import {
   View,
 } from 'react-native';
 
+import { LoadingView } from '../../components/LoadingView';
+import { ScoreBar } from '../../components/ScoreBar';
 import { useEvaluation, useSubmission } from '../../lib/hooks/queries';
+import { colors } from '../../lib/theme';
 
 /** 점수 항목 라벨 매핑 */
 const SCORE_LABELS: Record<string, string> = {
@@ -22,34 +24,6 @@ const SCORE_LABELS: Record<string, string> = {
 /** 점수 항목 키 (표시 순서) */
 const SCORE_KEYS = ['grammar', 'logic', 'expression', 'relevance'] as const;
 
-/** 점수 구간별 색상 */
-function scoreColor(score: number): string {
-  if (score >= 8) return '#4CAF50';
-  if (score >= 5) return '#FF9800';
-  return '#F44336';
-}
-
-/** 점수 프로그레스 바 */
-function ScoreBar({ label, score }: { label: string; score: number }) {
-  const color = scoreColor(score);
-  const widthPercent = (score / 10) * 100;
-
-  return (
-    <View style={styles.scoreRow}>
-      <Text style={styles.scoreLabel}>{label}</Text>
-      <View style={styles.barContainer}>
-        <View
-          style={[
-            styles.barFill,
-            { width: `${widthPercent}%`, backgroundColor: color },
-          ]}
-        />
-      </View>
-      <Text style={[styles.scoreValue, { color }]}>{score}</Text>
-    </View>
-  );
-}
-
 export default function EvaluationScreen() {
   const { submissionId } = useLocalSearchParams<{ submissionId: string }>();
   const router = useRouter();
@@ -58,12 +32,7 @@ export default function EvaluationScreen() {
   const { data: submission } = useSubmission(submissionId);
 
   if (isLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2196F3" />
-        <Text style={styles.loadingText}>평가 결과를 불러오는 중...</Text>
-      </View>
-    );
+    return <LoadingView text="평가 결과를 불러오는 중..." />;
   }
 
   if (error != null) {
@@ -84,6 +53,13 @@ export default function EvaluationScreen() {
 
   const feedback = evaluation.feedback;
 
+  const totalColor =
+    evaluation.total_score >= 8
+      ? colors.success
+      : evaluation.total_score >= 5
+        ? colors.warning
+        : colors.danger;
+
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
       {/* 총점 */}
@@ -92,7 +68,7 @@ export default function EvaluationScreen() {
         <Text
           style={[
             styles.totalScore,
-            { color: scoreColor(evaluation.total_score) },
+            { color: totalColor },
           ]}
         >
           {evaluation.total_score}
@@ -165,20 +141,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 20,
   },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 14,
-    color: '#666',
-  },
   errorText: {
     fontSize: 16,
-    color: '#F44336',
+    color: colors.danger,
     textAlign: 'center',
     marginBottom: 16,
   },
   emptyText: {
     fontSize: 16,
-    color: '#999',
+    color: colors.textMuted,
   },
   scroll: {
     padding: 16,
@@ -188,7 +159,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'baseline',
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 16,
     padding: 24,
     marginBottom: 20,
@@ -200,7 +171,7 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontSize: 18,
-    color: '#666',
+    color: colors.textSecondary,
     marginRight: 8,
   },
   totalScore: {
@@ -209,10 +180,10 @@ const styles = StyleSheet.create({
   },
   totalMax: {
     fontSize: 18,
-    color: '#999',
+    color: colors.textMuted,
   },
   section: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -225,36 +196,8 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#212121',
+    color: colors.textPrimary,
     marginBottom: 14,
-  },
-  scoreRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  scoreLabel: {
-    width: 80,
-    fontSize: 14,
-    color: '#555',
-  },
-  barContainer: {
-    flex: 1,
-    height: 10,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 5,
-    marginHorizontal: 10,
-    overflow: 'hidden',
-  },
-  barFill: {
-    height: '100%',
-    borderRadius: 5,
-  },
-  scoreValue: {
-    width: 28,
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'right',
   },
   feedbackCard: {
     backgroundColor: '#F5F5F5',
@@ -265,7 +208,7 @@ const styles = StyleSheet.create({
   feedbackLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#2196F3',
+    color: colors.primary,
     marginBottom: 4,
   },
   feedbackText: {
@@ -274,16 +217,16 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   backButton: {
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: '#2196F3',
+    borderColor: colors.primary,
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
     marginTop: 8,
   },
   backButtonText: {
-    color: '#2196F3',
+    color: colors.primary,
     fontSize: 16,
     fontWeight: '600',
   },
