@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { scoreColor } from '../lib/theme';
+import { colors, radius, scoreColor, typography } from '../lib/theme';
 
 interface ScoreBarProps {
   label: string;
@@ -10,32 +10,56 @@ interface ScoreBarProps {
 }
 
 /**
- * 점수 프로그레스 바
- * - size='normal'(기본): 라벨 w80, 바 h10, 값 w28
- * - size='mini': 라벨 w36, 바 h6, 값 w24
+ * 점수 진행 바
+ *
+ * 그라데이션 효과: 채워진 바 위에 흰색 반투명 레이어를 씌워
+ * 왼쪽이 밝고 오른쪽이 어두운 느낌을 줌 (expo-linear-gradient 없이)
  */
 export function ScoreBar({ label, score, size = 'normal' }: ScoreBarProps) {
   const isMini = size === 'mini';
   const color = scoreColor(score);
-
-  const labelStyle = isMini ? styles.labelMini : styles.labelNormal;
-  const barStyle = isMini ? styles.barMini : styles.barNormal;
-  const valueStyle = isMini ? styles.valueMini : styles.valueNormal;
+  const fillRatio = Math.min(Math.max(score / 10, 0), 1);
 
   return (
-    <View style={styles.row}>
-      <Text style={[styles.label, labelStyle]}>{label}</Text>
-      <View style={[styles.barContainer, barStyle]}>
-        {/* width % 는 인라인으로 — StyleSheet.create에 % 문자열 금지 */}
+    <View style={[styles.row, isMini && styles.rowMini]}>
+      <Text
+        style={[
+          styles.label,
+          isMini ? styles.labelMini : styles.labelNormal,
+        ]}
+      >
+        {label}
+      </Text>
+
+      {/* 트랙 */}
+      <View
+        style={[
+          styles.track,
+          isMini ? styles.trackMini : styles.trackNormal,
+        ]}
+      >
+        {/* 채워진 바 (색상 레이어) */}
         <View
           style={[
-            styles.barFill,
-            barStyle,
-            { width: `${(score / 10) * 100}%`, backgroundColor: color },
+            styles.fill,
+            isMini ? styles.fillMini : styles.fillNormal,
+            { width: `${fillRatio * 100}%`, backgroundColor: color },
           ]}
-        />
+        >
+          {/* 하이라이트 오버레이 — 왼쪽 상단 반투명 흰색으로 광택감 */}
+          <View style={styles.highlight} />
+        </View>
       </View>
-      <Text style={[styles.value, valueStyle, { color }]}>{score}</Text>
+
+      <Text
+        style={[
+          styles.value,
+          isMini ? styles.valueMini : styles.valueNormal,
+          { color },
+        ]}
+      >
+        {score}
+      </Text>
     </View>
   );
 }
@@ -44,10 +68,14 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 10,
+  },
+  rowMini: {
+    marginBottom: 6,
   },
   label: {
-    color: '#555',
+    color: colors.textSecondary,
+    ...typography.bodySmall,
   },
   labelNormal: {
     width: 80,
@@ -57,32 +85,51 @@ const styles = StyleSheet.create({
     width: 36,
     fontSize: 12,
   },
-  barContainer: {
+  track: {
     flex: 1,
-    backgroundColor: '#E0E0E0',
-    borderRadius: 5,
+    backgroundColor: colors.border,
+    borderRadius: radius.full,
     marginHorizontal: 10,
     overflow: 'hidden',
   },
-  barNormal: {
-    height: 10,
+  trackNormal: {
+    height: 8,
   },
-  barMini: {
-    height: 6,
+  trackMini: {
+    height: 5,
   },
-  barFill: {
-    borderRadius: 5,
+  fill: {
+    borderRadius: radius.full,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  fillNormal: {
+    height: 8,
+  },
+  fillMini: {
+    height: 5,
+  },
+  /** 왼쪽 상단에 반투명 흰색 광택 */
+  highlight: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '50%',
+    backgroundColor: 'rgba(255,255,255,0.28)',
+    borderTopLeftRadius: 999,
+    borderTopRightRadius: 999,
   },
   value: {
-    fontWeight: '600',
+    fontWeight: '700',
     textAlign: 'right',
   },
   valueNormal: {
     width: 28,
-    fontSize: 16,
+    fontSize: 15,
   },
   valueMini: {
-    width: 24,
+    width: 22,
     fontSize: 12,
   },
 });

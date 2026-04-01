@@ -1,36 +1,56 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../lib/theme';
+import { colors, radius, spacing, typography } from '../lib/theme';
 
 const styles = StyleSheet.create({
   badge: {
-    paddingHorizontal: 10,
+    paddingHorizontal: spacing.sm + 2,
     paddingVertical: 3,
-    borderRadius: 12,
+    borderRadius: radius.full,
+    alignSelf: 'flex-start',
   },
   badgeText: {
-    fontSize: 12,
-    color: '#fff',
-    fontWeight: '500',
+    ...typography.label,
   },
 });
 
-/** 난이도 뱃지 — difficulty 값에 따라 색상 결정 */
+/** 난이도 뱃지 */
 export function DifficultyBadge({ difficulty }: { difficulty: string }) {
-  const backgroundColor = colors.difficulty[difficulty] ?? '#9E9E9E';
+  const bg = colors.difficulty[difficulty] ?? '#9E9E9E';
   return (
-    <View style={[styles.badge, { backgroundColor }]}>
-      <Text style={styles.badgeText}>{difficulty}</Text>
+    <View style={[styles.badge, { backgroundColor: bg + '22' }]}>
+      <Text style={[styles.badgeText, { color: bg }]}>
+        {difficulty}
+      </Text>
     </View>
   );
 }
 
-/** 카테고리 뱃지 — primary 색상 고정 */
+/** 카테고리 뱃지 */
 export function CategoryBadge({ category }: { category: string }) {
   return (
-    <View style={[styles.badge, { backgroundColor: colors.category }]}>
-      <Text style={styles.badgeText}>{category}</Text>
+    <View style={[styles.badge, { backgroundColor: colors.primarySurface }]}>
+      <Text style={[styles.badgeText, { color: colors.primary }]}>
+        {category}
+      </Text>
+    </View>
+  );
+}
+
+/** 상태 뱃지 — 일반용 */
+export function StatusBadge({
+  label,
+  color,
+  bg,
+}: {
+  label: string;
+  color: string;
+  bg: string;
+}) {
+  return (
+    <View style={[styles.badge, { backgroundColor: bg }]}>
+      <Text style={[styles.badgeText, { color }]}>{label}</Text>
     </View>
   );
 }

@@ -1,18 +1,19 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '../lib/theme';
+import { colors, radius, shadow, spacing, typography } from '../lib/theme';
 
 interface LoadingViewProps {
   text?: string;
 }
 
-/** 전체 화면 로딩 — flex:1 중앙 정렬 */
-export function LoadingView({ text }: LoadingViewProps) {
+export function LoadingView({ text = '불러오는 중…' }: LoadingViewProps) {
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color={colors.primary} />
-      {text ? <Text style={styles.text}>{text}</Text> : null}
+      <View style={styles.card}>
+        <ActivityIndicator size="large" color={colors.primary} />
+        <Text style={styles.text}>{text}</Text>
+      </View>
     </View>
   );
 }
@@ -22,11 +23,20 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    backgroundColor: colors.background,
+    padding: spacing.xl,
+  },
+  card: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.xxl,
+    paddingHorizontal: spacing.xxxl,
+    ...shadow.card,
   },
   text: {
-    marginTop: 12,
-    fontSize: 14,
-    color: '#666',
+    marginTop: spacing.md,
+    ...typography.bodySmall,
+    color: colors.textMuted,
   },
 });

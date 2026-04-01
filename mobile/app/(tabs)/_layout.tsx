@@ -1,18 +1,25 @@
 import { Tabs } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, StyleSheet } from 'react-native';
+
+import { colors, shadow, typography } from '../../lib/theme';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: true,
-        tabBarActiveTintColor: '#2196F3',
-        tabBarStyle: Platform.select({
-          ios: { position: 'absolute' },
-          default: {},
-        }),
+        tabBarActiveTintColor: colors.tabActive,
+        tabBarInactiveTintColor: colors.tabInactive,
+        tabBarStyle: [
+          styles.tabBar,
+          Platform.select({ ios: { position: 'absolute' }, default: {} }),
+        ],
+        tabBarLabelStyle: styles.tabLabel,
+        headerStyle: styles.header,
+        headerTitleStyle: { ...typography.h3, color: colors.textPrimary },
+        headerShadowVisible: false,
       }}
     >
       <Tabs.Screen
@@ -23,7 +30,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <SymbolView
               name={{ ios: 'list.bullet', android: 'format_list_bulleted', web: 'format_list_bulleted' }}
-              size={24}
+              size={22}
               tintColor={color}
               weight={focused ? 'semibold' : 'regular'}
             />
@@ -38,7 +45,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, focused }) => (
             <SymbolView
               name={{ ios: 'clock.arrow.circlepath', android: 'history', web: 'history' }}
-              size={24}
+              size={22}
               tintColor={color}
               weight={focused ? 'semibold' : 'regular'}
             />
@@ -48,3 +55,19 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBar: {
+    backgroundColor: colors.tabBackground,
+    borderTopColor: colors.border,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    ...shadow.bar,
+  },
+  tabLabel: {
+    ...typography.label,
+    fontSize: 11,
+  },
+  header: {
+    backgroundColor: colors.surface,
+  },
+});
