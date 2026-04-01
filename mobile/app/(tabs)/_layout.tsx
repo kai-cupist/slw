@@ -3,7 +3,7 @@ import { SymbolView } from 'expo-symbols';
 import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 
-import { colors, shadow, typography } from '../../lib/theme';
+import { colors, shadow, spacing, typography } from '../../lib/theme';
 
 export default function TabLayout() {
   return (
@@ -17,6 +17,7 @@ export default function TabLayout() {
           Platform.select({ ios: { position: 'absolute' }, default: {} }),
         ],
         tabBarLabelStyle: styles.tabLabel,
+        tabBarItemStyle: styles.tabItem,
         headerStyle: styles.header,
         headerTitleStyle: { ...typography.h3, color: colors.textPrimary },
         headerShadowVisible: false,
@@ -61,13 +62,20 @@ const styles = StyleSheet.create({
     backgroundColor: colors.tabBackground,
     borderTopColor: colors.border,
     borderTopWidth: StyleSheet.hairlineWidth,
+    paddingTop: spacing.xs,
+    height: Platform.select({ ios: 84, default: 60 }),
     ...shadow.bar,
+  },
+  tabItem: {
+    paddingTop: spacing.xs,
   },
   tabLabel: {
     ...typography.label,
     fontSize: 11,
+    marginBottom: Platform.select({ ios: 0, default: spacing.xs }),
   },
   header: {
     backgroundColor: colors.surface,
+    ...shadow.bar,
   },
 });

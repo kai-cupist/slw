@@ -6,14 +6,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Dimensions,
-  Image,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { colors, typography } from '../lib/theme';
+import { colors, shadow, typography } from '../lib/theme';
 import { useUserStore } from '../stores/userStore';
 
 const queryClient = new QueryClient();
@@ -66,7 +65,7 @@ function SplashScreen({ onFinish }: { onFinish: () => void }) {
         style={[styles.splashImage, { opacity: imageOpacity }]}
         resizeMode="cover"
       />
-      {/* 반투명 오버레이 */}
+      {/* 반투명 오버레이 — textPrimary(#1A1A2E) 기반 다크 베일 */}
       <View style={styles.splashOverlay} />
       {/* 텍스트 */}
       <Animated.View
@@ -92,6 +91,7 @@ const AppTheme = {
     card: colors.surface,
     text: colors.textPrimary,
     border: colors.border,
+    notification: colors.primary,
   },
 };
 
@@ -125,7 +125,7 @@ export default function RootLayout() {
         <ThemeProvider value={AppTheme}>
           <Stack
             screenOptions={{
-              headerStyle: { backgroundColor: colors.surface },
+              headerStyle: styles.header,
               headerTintColor: colors.primary,
               headerTitleStyle: { ...typography.h3, color: colors.textPrimary },
               headerShadowVisible: false,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     width,
     height,
     zIndex: 999,
-    backgroundColor: '#F8F7FF',
+    backgroundColor: colors.background,
   },
   splashImage: {
     width: '100%',
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   splashTitle: {
     fontSize: 30,
     fontWeight: '800',
-    color: '#FFFFFF',
+    color: colors.textOnPrimary,
     letterSpacing: -0.5,
     textShadowColor: 'rgba(0,0,0,0.4)',
     textShadowOffset: { width: 0, height: 2 },
@@ -198,6 +198,10 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0,0,0,0.3)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 4,
+  },
+  header: {
+    backgroundColor: colors.surface,
+    ...shadow.bar,
   },
   loadingBg: {
     flex: 1,

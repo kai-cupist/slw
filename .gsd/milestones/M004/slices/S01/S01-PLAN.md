@@ -12,7 +12,7 @@
   - Estimate: 30m
   - Files: mobile/components/Badge.tsx, mobile/components/ScoreBar.tsx, mobile/components/LoadingView.tsx, mobile/components/ErrorView.tsx
   - Verify: tsc --noEmit
-- [ ] **T03: 레이아웃 및 탭 스타일 업그레이드** — _layout.tsx 헤더, 탭바 스타일 업그레이드
+- [x] **T03: _layout.tsx와 (tabs)/_layout.tsx에 shadow.bar 헤더, 탭바 높이 정제, 스플래시 색상 토큰화 적용** — _layout.tsx 헤더, 탭바 스타일 업그레이드
   - Estimate: 20m
   - Files: mobile/app/_layout.tsx, mobile/app/(tabs)/_layout.tsx
   - Verify: tsc --noEmit
