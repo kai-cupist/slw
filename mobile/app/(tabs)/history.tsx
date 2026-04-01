@@ -17,7 +17,7 @@ import { LoadingView } from '../../components/LoadingView';
 import { ScoreBar } from '../../components/ScoreBar';
 import { useDeleteSubmission } from '../../lib/hooks/mutations';
 import { useEvaluationHistory, useScoreTrend } from '../../lib/hooks/queries';
-import { colors } from '../../lib/theme';
+import { colors, radius, shadow, spacing, typography } from '../../lib/theme';
 import type { EvaluationHistory, ScoreTrend } from '../../lib/types';
 
 /** 날짜 포맷 (YYYY.MM.DD) */
@@ -33,7 +33,6 @@ function formatDate(isoString: string): string {
 function TrendSection() {
   const { data: trends, isLoading, error } = useScoreTrend();
 
-  // 에러 또는 로딩 중이면 섹션 숨김
   if (isLoading || error) return null;
   if (!trends || trends.length === 0) return null;
 
@@ -45,7 +44,17 @@ function TrendSection() {
           <View style={styles.trendHeader}>
             <Text style={styles.trendDate}>{formatDate(t.evaluated_at)}</Text>
             <Text
-              style={[styles.trendTotal, { color: t.total_score >= 8 ? colors.success : t.total_score >= 5 ? colors.warning : colors.danger }]}
+              style={[
+                styles.trendTotal,
+                {
+                  color:
+                    t.total_score >= 8
+                      ? colors.success
+                      : t.total_score >= 5
+                        ? colors.warning
+                        : colors.danger,
+                },
+              ]}
             >
               {t.total_score}점
             </Text>
@@ -94,7 +103,7 @@ export default function HistoryScreen() {
     if (!isFetchingNextPage) return null;
     return (
       <View style={styles.footerLoader}>
-        <ActivityIndicator size="small" color="#2196F3" />
+        <ActivityIndicator size="small" color={colors.primary} />
       </View>
     );
   }, [isFetchingNextPage]);
@@ -143,7 +152,14 @@ export default function HistoryScreen() {
               <Text
                 style={[
                   styles.cardScore,
-                  { color: item.total_score >= 8 ? colors.success : item.total_score >= 5 ? colors.warning : colors.danger },
+                  {
+                    color:
+                      item.total_score >= 8
+                        ? colors.success
+                        : item.total_score >= 5
+                          ? colors.warning
+                          : colors.danger,
+                  },
                 ]}
               >
                 {item.total_score}점
@@ -205,31 +221,29 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: spacing.xl,
+    backgroundColor: colors.background,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#999',
-    marginBottom: 4,
+    ...typography.body,
+    color: colors.textMuted,
+    marginBottom: spacing.xs,
   },
   emptySubtext: {
-    fontSize: 14,
-    color: '#bbb',
+    ...typography.bodySmall,
+    color: colors.textMuted,
   },
   list: {
-    padding: 16,
+    padding: spacing.lg,
+    backgroundColor: colors.background,
   },
   // ── History card ──
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    padding: spacing.lg,
+    marginBottom: spacing.md,
+    ...shadow.card,
   },
   cardPressed: {
     opacity: 0.7,
@@ -238,14 +252,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: spacing.sm,
   },
   cardTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#212121',
+    ...typography.h3,
+    color: colors.textPrimary,
     flex: 1,
-    marginRight: 12,
+    marginRight: spacing.md,
   },
   cardScore: {
     fontSize: 18,
@@ -257,66 +270,60 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardDate: {
-    fontSize: 13,
-    color: '#999',
+    ...typography.bodySmall,
+    color: colors.textMuted,
   },
   // ── Trend section ──
   trendSection: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
-    elevation: 2,
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    padding: spacing.lg,
+    marginBottom: spacing.xl,
+    ...shadow.card,
   },
   trendTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#212121',
-    marginBottom: 12,
+    ...typography.h3,
+    color: colors.textPrimary,
+    marginBottom: spacing.md,
   },
   trendItem: {
-    marginBottom: 14,
-    paddingBottom: 14,
+    marginBottom: spacing.md,
+    paddingBottom: spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#E0E0E0',
+    borderBottomColor: colors.border,
   },
   trendHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: spacing.sm,
   },
   trendDate: {
-    fontSize: 13,
-    color: '#888',
+    ...typography.bodySmall,
+    color: colors.textMuted,
   },
   trendTotal: {
     fontSize: 16,
     fontWeight: '700',
   },
   trendBars: {
-    gap: 4,
+    gap: spacing.xs,
   },
   footerLoader: {
-    paddingVertical: 16,
+    paddingVertical: spacing.lg,
     alignItems: 'center',
   },
   // ── Swipe delete ──
   deleteAction: {
     width: 80,
-    backgroundColor: '#F44336',
+    backgroundColor: colors.danger,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
-    borderRadius: 12,
+    marginBottom: spacing.md,
+    borderRadius: radius.md,
   },
   deleteActionText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
+    color: colors.textOnPrimary,
+    ...typography.label,
   },
 });

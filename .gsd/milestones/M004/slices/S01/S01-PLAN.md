@@ -24,7 +24,7 @@
   - Estimate: 30m
   - Files: mobile/app/write/index.tsx, mobile/app/evaluation/[submissionId].tsx
   - Verify: tsc --noEmit
-- [ ] **T06: 이력 화면 리디자인 + 전체 검증** — history.tsx 스타일 교체, 전체 tsc + 구 색상 하드코딩 제거 검증
+- [x] **T06: history.tsx 하드코딩 색상 전부 Indigo 테마 토큰으로 교체, tsc + rg 기반 슬라이스 전체 검증 통과** — history.tsx 스타일 교체, 전체 tsc + 구 색상 하드코딩 제거 검증
   - Estimate: 30m
   - Files: mobile/app/(tabs)/history.tsx
   - Verify: tsc --noEmit && ! rg "'#2196F3'" mobile/app/ && ! rg "'#4CAF50'" mobile/app/
