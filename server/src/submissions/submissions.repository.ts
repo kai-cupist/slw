@@ -122,6 +122,28 @@ export class SubmissionsRepository {
   }
 
   /**
+   * 사용자의 특정 프롬프트에 대한 draft 답안을 조회한다.
+   * 중복 생성 방지 용도로 사용된다.
+   *
+   * @param userId - 사용자 ID
+   * @param promptId - 프롬프트 ID
+   * @returns draft 답안 또는 null
+   */
+  async findDraftByUserAndPrompt(
+    userId: string,
+    promptId: number,
+  ): Promise<Submission | null> {
+    return this.db.queryOne<Submission>(
+      `SELECT id, prompt_id, user_id, content, status, created_at, updated_at, deleted_at
+       FROM submissions
+       WHERE user_id = $1 AND prompt_id = $2 AND status = 'draft' AND deleted_at IS NULL
+       ORDER BY created_at DESC
+       LIMIT 1`,
+      [userId, promptId],
+    );
+  }
+
+  /**
    * 사용자의 답안 목록을 페이지네이션하여 조회한다.
    * prompts 테이블과 JOIN하여 주제 정보(title, category, difficulty)를 포함한다.
    * 동적 WHERE 절은 paramIndex 카운터를 사용하여 파라미터 순서를 안전하게 추적한다.

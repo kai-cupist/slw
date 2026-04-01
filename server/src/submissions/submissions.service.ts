@@ -31,10 +31,11 @@ export class SubmissionsService {
   /**
    * 새 답안을 생성한다 (임시저장).
    * prompt_id가 유효한지 확인한 후 생성한다.
+   * 이미 해당 prompt에 대한 draft가 존재하면 새로 생성하지 않고 기존 draft를 반환한다.
    *
    * @param userId - 사용자 ID (X-User-Id 헤더)
    * @param dto - 생성 DTO (prompt_id 필수, content 선택)
-   * @returns 생성된 답안
+   * @returns 생성된 답안 (또는 기존 draft)
    * @throws BadRequestException 유효하지 않은 prompt_id인 경우
    */
   async create(userId: string, dto: CreateSubmissionDto): Promise<Submission> {
@@ -43,6 +44,15 @@ export class SubmissionsService {
       await this.promptsService.findOne(dto.prompt_id);
     } catch {
       throw new BadRequestException('유효하지 않은 주제입니다');
+    }
+
+    // 이미 draft가 존재하면 중복 생성 방지 — 기존 draft 반환
+    const existingDraft = await this.submissionsRepository.findDraftByUserAndPrompt(
+      userId,
+      dto.prompt_id,
+    );
+    if (existingDraft) {
+      return existingDraft;
     }
 
     return this.submissionsRepository.create(

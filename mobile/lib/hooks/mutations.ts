@@ -5,11 +5,18 @@ import type { Submission, Evaluation } from '../types';
 /**
  * 새 제출물 생성
  * promptId를 받아 POST /submissions를 호출하고 Submission을 반환한다.
+ * 성공 후 해당 prompt의 draft 캐시를 무효화하여 "이어서 작성" 버튼이 즉시 반영되도록 한다.
  */
 export function useCreateSubmission() {
+  const queryClient = useQueryClient();
   return useMutation<Submission, Error, number>({
     mutationFn: (promptId: number) =>
       api.post<Submission>('/submissions', { prompt_id: promptId }),
+    onSuccess: (_data, promptId) => {
+      queryClient.invalidateQueries({
+        queryKey: ['promptDraft', String(promptId)],
+      });
+    },
   });
 }
 
