@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { api } from '../api';
 import type {
   Prompt,
@@ -10,14 +10,22 @@ import type {
   SubmissionWithPrompt,
 } from '../types';
 
+const PAGE_LIMIT = 20;
+
 /**
- * 프롬프트 목록 조회
- * staleTime: 5분 — 목록은 자주 바뀌지 않으므로 긴 캐시 유지
+ * 프롬프트 무한 스크롤 목록 조회
+ * getNextPageParam: 마지막 페이지의 page < totalPages면 다음 페이지 번호 반환
  */
 export function usePrompts() {
-  return useQuery<PaginatedResponse<Prompt>>({
+  return useInfiniteQuery<PaginatedResponse<Prompt>>({
     queryKey: ['prompts'],
-    queryFn: () => api.get<PaginatedResponse<Prompt>>('/prompts?page=1&limit=20'),
+    queryFn: ({ pageParam }) =>
+      api.get<PaginatedResponse<Prompt>>(
+        `/prompts?page=${pageParam}&limit=${PAGE_LIMIT}`,
+      ),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
     staleTime: 300_000,
   });
 }
@@ -62,14 +70,19 @@ export function useEvaluation(submissionId: string | undefined) {
 }
 
 /**
- * 평가 이력 목록 조회
+ * 평가 이력 무한 스크롤 목록 조회
  * staleTime: 1분
  */
 export function useEvaluationHistory() {
-  return useQuery<PaginatedResponse<EvaluationHistory>>({
+  return useInfiniteQuery<PaginatedResponse<EvaluationHistory>>({
     queryKey: ['evaluationHistory'],
-    queryFn: () =>
-      api.get<PaginatedResponse<EvaluationHistory>>('/evaluations/history?page=1&limit=20'),
+    queryFn: ({ pageParam }) =>
+      api.get<PaginatedResponse<EvaluationHistory>>(
+        `/evaluations/history?page=${pageParam}&limit=${PAGE_LIMIT}`,
+      ),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) =>
+      lastPage.page < lastPage.totalPages ? lastPage.page + 1 : undefined,
     staleTime: 60_000,
   });
 }

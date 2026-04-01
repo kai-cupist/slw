@@ -89,14 +89,39 @@ function TrendSection() {
 
 export default function HistoryScreen() {
   const router = useRouter();
-  const { data, isLoading, error, refetch, isFetching } = useEvaluationHistory();
+  const {
+    data,
+    isLoading,
+    error,
+    refetch,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+  } = useEvaluationHistory();
   const { refetch: refetchTrend } = useScoreTrend();
-  const items = data?.items ?? [];
+
+  const items = data?.pages.flatMap((p) => p.items) ?? [];
 
   const handleRefresh = useCallback(() => {
     refetch();
     refetchTrend();
   }, [refetch, refetchTrend]);
+
+  const handleEndReached = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const renderFooter = useCallback(() => {
+    if (!isFetchingNextPage) return null;
+    return (
+      <View style={styles.footerLoader}>
+        <ActivityIndicator size="small" color="#2196F3" />
+      </View>
+    );
+  }, [isFetchingNextPage]);
 
   const renderItem = useCallback(
     ({ item }: { item: EvaluationHistory }) => {
@@ -174,8 +199,11 @@ export default function HistoryScreen() {
       keyExtractor={keyExtractor}
       contentContainerStyle={styles.list}
       ListHeaderComponent={<TrendSection />}
-      refreshing={isFetching}
+      refreshing={isFetching && !isFetchingNextPage}
       onRefresh={handleRefresh}
+      onEndReached={handleEndReached}
+      onEndReachedThreshold={0.3}
+      ListFooterComponent={renderFooter}
     />
   );
 }
@@ -340,5 +368,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     textAlign: 'right',
+  },
+  footerLoader: {
+    paddingVertical: 16,
+    alignItems: 'center',
   },
 });

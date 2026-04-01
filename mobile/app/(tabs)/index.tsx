@@ -37,8 +37,18 @@ function CategoryBadge({ category }: { category: string }) {
 
 export default function PromptsScreen() {
   const router = useRouter();
-  const { data, isLoading, error, refetch, isFetching } = usePrompts();
-  const prompts = data?.items ?? [];
+  const {
+    data,
+    isLoading,
+    error,
+    refetch,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+  } = usePrompts();
+
+  const prompts = data?.pages.flatMap((p) => p.items) ?? [];
 
   const renderItem = useCallback(
     ({ item }: { item: Prompt }) => (
@@ -60,6 +70,21 @@ export default function PromptsScreen() {
   );
 
   const keyExtractor = useCallback((item: Prompt) => String(item.id), []);
+
+  const handleEndReached = useCallback(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+  const renderFooter = useCallback(() => {
+    if (!isFetchingNextPage) return null;
+    return (
+      <View style={styles.footerLoader}>
+        <ActivityIndicator size="small" color="#2196F3" />
+      </View>
+    );
+  }, [isFetchingNextPage]);
 
   if (isLoading) {
     return (
@@ -95,8 +120,11 @@ export default function PromptsScreen() {
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       contentContainerStyle={styles.list}
-      refreshing={isFetching}
+      refreshing={isFetching && !isFetchingNextPage}
       onRefresh={refetch}
+      onEndReached={handleEndReached}
+      onEndReachedThreshold={0.3}
+      ListFooterComponent={renderFooter}
     />
   );
 }
@@ -176,5 +204,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#fff',
     fontWeight: '500',
+  },
+  footerLoader: {
+    paddingVertical: 16,
+    alignItems: 'center',
   },
 });
