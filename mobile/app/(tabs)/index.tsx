@@ -13,6 +13,7 @@ import { CategoryBadge, DifficultyBadge } from '../../components/Badge';
 import { ErrorView } from '../../components/ErrorView';
 import { LoadingView } from '../../components/LoadingView';
 import { usePrompts } from '../../lib/hooks/queries';
+import { colors, radius, shadow, spacing, typography } from '../../lib/theme';
 import type { Prompt } from '../../lib/types';
 
 export default function PromptsScreen() {
@@ -61,7 +62,7 @@ export default function PromptsScreen() {
     if (!isFetchingNextPage) return null;
     return (
       <View style={styles.footerLoader}>
-        <ActivityIndicator size="small" color="#2196F3" />
+        <ActivityIndicator size="small" color={colors.primary} />
       </View>
     );
   }, [isFetchingNextPage]);
@@ -88,6 +89,7 @@ export default function PromptsScreen() {
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       contentContainerStyle={styles.list}
+      style={styles.flatList}
       refreshing={isFetching && !isFetchingNextPage}
       onRefresh={refetch}
       onEndReached={handleEndReached}
@@ -98,51 +100,50 @@ export default function PromptsScreen() {
 }
 
 const styles = StyleSheet.create({
+  flatList: {
+    backgroundColor: colors.background,
+  },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: spacing.xl,
+    backgroundColor: colors.background,
   },
   emptyText: {
-    fontSize: 16,
-    color: '#999',
+    ...typography.body,
+    color: colors.textMuted,
   },
   list: {
-    padding: 16,
+    padding: spacing.lg,
+    paddingBottom: spacing.xxxl,
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    padding: spacing.lg,
+    marginBottom: spacing.md,
+    ...shadow.card,
   },
   cardPressed: {
-    opacity: 0.7,
+    opacity: 0.75,
   },
   cardTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    marginBottom: 6,
-    color: '#212121',
+    ...typography.h3,
+    color: colors.textPrimary,
+    marginBottom: spacing.xs,
   },
   cardDescription: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 20,
-    marginBottom: 10,
+    ...typography.body,
+    color: colors.textSecondary,
+    marginBottom: spacing.sm + 2,
   },
   badgeRow: {
     flexDirection: 'row',
-    gap: 8,
+    gap: spacing.sm,
   },
   footerLoader: {
-    paddingVertical: 16,
+    paddingVertical: spacing.lg,
     alignItems: 'center',
   },
 });

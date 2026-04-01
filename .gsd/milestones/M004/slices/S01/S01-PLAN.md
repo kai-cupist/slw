@@ -16,7 +16,7 @@
   - Estimate: 20m
   - Files: mobile/app/_layout.tsx, mobile/app/(tabs)/_layout.tsx
   - Verify: tsc --noEmit
-- [ ] **T04: 주제 목록 + 주제 상세 화면 리디자인** — index.tsx (주제 목록), prompts/[id].tsx (주제 상세) 스타일 전면 교체
+- [x] **T04: index.tsx와 prompts/[id].tsx 두 화면의 하드코딩 색상을 Indigo 테마 토큰으로 전면 교체하고 주제 상세 화면에 description 카드 UI 추가** — index.tsx (주제 목록), prompts/[id].tsx (주제 상세) 스타일 전면 교체
   - Estimate: 30m
   - Files: mobile/app/(tabs)/index.tsx, mobile/app/prompts/[id].tsx
   - Verify: tsc --noEmit

@@ -13,6 +13,7 @@ import { CategoryBadge, DifficultyBadge } from '../../components/Badge';
 import { ErrorView } from '../../components/ErrorView';
 import { LoadingView } from '../../components/LoadingView';
 import { usePrompt, usePromptDraft } from '../../lib/hooks/queries';
+import { colors, radius, shadow, spacing, typography } from '../../lib/theme';
 
 export default function PromptDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -46,7 +47,10 @@ export default function PromptDetailScreen() {
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+      >
         <Text style={styles.title}>{prompt.title}</Text>
 
         <View style={styles.metaRow}>
@@ -54,7 +58,10 @@ export default function PromptDetailScreen() {
           <DifficultyBadge difficulty={prompt.difficulty} />
         </View>
 
-        <Text style={styles.description}>{prompt.description}</Text>
+        <View style={styles.descriptionCard}>
+          <Text style={styles.descriptionLabel}>주제 설명</Text>
+          <Text style={styles.description}>{prompt.description}</Text>
+        </View>
       </ScrollView>
 
       <View style={styles.footer}>
@@ -62,26 +69,26 @@ export default function PromptDetailScreen() {
           <Pressable
             style={({ pressed }) => [
               styles.continueButton,
-              pressed && styles.startButtonPressed,
+              pressed && styles.buttonPressed,
             ]}
             onPress={handleContinueWriting}
           >
-            <Text style={styles.startButtonText}>이어서 작성</Text>
+            <Text style={styles.buttonText}>이어서 작성</Text>
           </Pressable>
         ) : (
           <Pressable
             style={({ pressed }) => [
               styles.startButton,
-              pressed && styles.startButtonPressed,
-              draftLoading && styles.startButtonDisabled,
+              pressed && styles.buttonPressed,
+              draftLoading && styles.buttonDisabled,
             ]}
             onPress={handleStartWriting}
             disabled={draftLoading}
           >
             {draftLoading ? (
-              <ActivityIndicator size="small" color="#fff" />
+              <ActivityIndicator size="small" color={colors.textOnPrimary} />
             ) : (
-              <Text style={styles.startButtonText}>작성 시작</Text>
+              <Text style={styles.buttonText}>작성 시작</Text>
             )}
           </Pressable>
         )}
@@ -93,53 +100,67 @@ export default function PromptDetailScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.background,
   },
   scroll: {
-    padding: 20,
+    padding: spacing.xl,
+    paddingBottom: spacing.xxxl,
   },
   title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#212121',
-    marginBottom: 12,
+    ...typography.h1,
+    color: colors.textPrimary,
+    marginBottom: spacing.md,
   },
   metaRow: {
     flexDirection: 'row',
-    gap: 8,
-    marginBottom: 20,
+    gap: spacing.sm,
+    marginBottom: spacing.xl,
+  },
+  descriptionCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.md,
+    padding: spacing.lg,
+    ...shadow.card,
+  },
+  descriptionLabel: {
+    ...typography.label,
+    color: colors.primary,
+    marginBottom: spacing.sm,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
   },
   description: {
-    fontSize: 16,
-    color: '#424242',
-    lineHeight: 24,
+    ...typography.body,
+    color: colors.textSecondary,
   },
   footer: {
-    padding: 16,
-    paddingBottom: 32,
+    padding: spacing.lg,
+    paddingBottom: spacing.xxxl,
+    backgroundColor: colors.surface,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: colors.border,
+    ...shadow.bar,
   },
   startButton: {
-    backgroundColor: '#2196F3',
-    paddingVertical: 14,
-    borderRadius: 12,
+    backgroundColor: colors.primary,
+    paddingVertical: spacing.md + 2,
+    borderRadius: radius.sm,
     alignItems: 'center',
-  },
-  startButtonPressed: {
-    opacity: 0.8,
-  },
-  startButtonDisabled: {
-    opacity: 0.6,
-  },
-  startButtonText: {
-    color: '#fff',
-    fontSize: 17,
-    fontWeight: '600',
   },
   continueButton: {
-    backgroundColor: '#4CAF50',
-    paddingVertical: 14,
-    borderRadius: 12,
+    backgroundColor: colors.primaryDark,
+    paddingVertical: spacing.md + 2,
+    borderRadius: radius.sm,
     alignItems: 'center',
+  },
+  buttonPressed: {
+    opacity: 0.8,
+  },
+  buttonDisabled: {
+    opacity: 0.6,
+  },
+  buttonText: {
+    ...typography.button,
+    color: colors.textOnPrimary,
   },
 });
