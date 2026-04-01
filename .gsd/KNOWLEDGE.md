@@ -77,3 +77,15 @@
 - **발견:** M003/S04/T03, T04
 - **내용:** `! rg 'scoreColor' app/` 검증 조건이 있을 경우, theme.ts의 scoreColor 함수를 import하면 조건이 실패한다. 이 경우 `score >= 8 ? colors.success : score >= 5 ? colors.warning : colors.danger` 형태의 인라인 3항 연산으로 대체한다. scoreColor import가 허용되는 컴포넌트 파일(ScoreBar.tsx)과 app/ 화면 파일에서의 처리를 구분해야 한다.
 - **영향:** 검증 조건 설계 시 함수 vs 인라인 표현 선택 명확화
+
+## K014 — expo-router Stack의 headerStyle은 배열을 지원하지 않음
+
+- **발견:** M004/S01/T03
+- **내용:** expo-router의 `<Stack.Screen options={{ headerStyle }}>`에서 headerStyle은 배열 형식을 지원하지 않는다. shadow.bar 같은 shadow 토큰을 헤더에 적용하려면 `StyleSheet.create({ header: { ...shadow.bar, backgroundColor: ... } })` 처럼 StyleSheet 생성 시점에 스프레드로 병합해야 한다.
+- **영향:** expo-router 헤더에 복합 스타일 적용 시 배열 대신 스프레드 병합 패턴 사용
+
+## K015 — expo-linear-gradient 미설치 환경에서 그라데이션 효과 우회
+
+- **발견:** M004/S01/T02
+- **내용:** expo-linear-gradient 패키지가 설치되지 않은 경우, 반투명 흰색(rgba(255,255,255,0.3)) View를 바 위에 절대위치로 덮으면 광택 그라데이션과 유사한 시각 효과를 얻을 수 있다. 순수 React Native StyleSheet만으로 구현 가능하므로 네이티브 모듈 의존 없이 동작한다.
+- **영향:** 그라데이션이 필요한 컴포넌트에서 expo-linear-gradient 없이 유사 효과 구현 가능

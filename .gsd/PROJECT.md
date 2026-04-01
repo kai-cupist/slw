@@ -6,17 +6,19 @@
 
 ## Current State
 
-**M001 (쓰기 평가 MVP) 완료. M002 (TanStack Query 도입 및 UX 개선) 완료.**
+**M001 (쓰기 평가 MVP) 완료. M002 (TanStack Query 도입 및 UX 개선) 완료. M003 (공통 컴포넌트 추출 및 코드 품질 개선) 완료. M004 (Indigo 팔레트 기반 앱 전체 리디자인) 완료.**
 
 M001에서 "주제 선택 → 답안 작성 → 제출 → AI 평가 → 피드백 확인" 핵심 흐름이 백엔드 API + Expo 모바일 앱으로 끝까지 동작하는 v1이 완성되었다.
 
-M002에서 모바일 앱의 서버 상태 관리를 TanStack Query(v5)로 완전 전환하고, draft 이어쓰기 흐름과 pull-to-refresh·자동 갱신 UX를 완성했다. fetch/useEffect 패턴이 공유 hooks 레이어(`lib/hooks/queries.ts`, `lib/hooks/mutations.ts`)로 완전히 대체되었다.
+M002에서 모바일 앱의 서버 상태 관리를 TanStack Query(v5)로 완전 전환하고, draft 이어쓰기 흐름과 pull-to-refresh·자동 갱신 UX를 완성했다.
+
+M004에서 Indigo #5C6BC0 팔레트 기반 theme.ts 디자인 토큰 시스템을 완전 재작성하고, 공통 컴포넌트 4종(Badge/ScoreBar/LoadingView/ErrorView) 리디자인, 앱 전체 6개 화면의 하드코딩 색상을 전면 테마 토큰으로 교체했다.
 
 ### 구현된 기능
 - **백엔드 (NestJS):** 14개 REST API 엔드포인트 — 주제 2개, 답안 6개, 평가 4개, 헬스체크 1개, Swagger 1개
 - **데이터베이스 (PostgreSQL 16):** 4개 테이블(schema_migrations, prompts, submissions, evaluations) + 30개 시드 데이터
 - **AI 평가 (Groq LLM):** Llama 3.3 70B 기반 문법/논리/표현력/주제 적절성 4항목 평가
-- **모바일 앱 (Expo SDK 55):** 7개 화면 — 주제 목록, 주제 상세, 답안 작성, 평가 결과, 이력/추이. TanStack Query v5 기반 서버 상태 관리, draft 이어쓰기 흐름, pull-to-refresh, 평가 후 캐시 자동 갱신
+- **모바일 앱 (Expo SDK 55):** 7개 화면 — 주제 목록, 주제 상세, 답안 작성, 평가 결과, 이력/추이. TanStack Query v5 기반 서버 상태 관리, draft 이어쓰기 흐름, pull-to-refresh, 평가 후 캐시 자동 갱신. Indigo 팔레트 기반 theme.ts 디자인 시스템으로 시각적으로 세련된 UI
 - **인프라:** Docker Compose(PostgreSQL + NestJS), 수동 SQL 마이그레이션(6개 파일), Swagger UI
 
 ## Core Value
@@ -66,6 +68,8 @@ M002에서 모바일 앱의 서버 상태 관리를 TanStack Query(v5)로 완전
 | LLM 호출은 트랜잭션 밖에서 처리 | 커넥션 점유 최소화, API 실패 시 DB 상태 보전 | ✅ evaluations.service.ts에서 적용 |
 | CNG 방식 Expo 프로젝트 | ios/android 디렉토리 gitignore, prebuild로 필요 시 생성 | ✅ mobile/ 디렉토리에 적용 |
 
+| Indigo #5C6BC0을 주조색으로 선택 | 언어학습 앱의 지적·신뢰감 컨셉과 부합, 순백 배경 대신 #F8F7FF 오프화이트로 팔레트 일관성 강화 | ✅ 적용됨 — M004에서 theme.ts 전면 재작성 |
+
 ## Follow-ups (v2 후보)
 
 - 실제 인증 체계 도입 (JWT 등)
@@ -81,6 +85,9 @@ M002에서 모바일 앱의 서버 상태 관리를 TanStack Query(v5)로 완전
 - v1은 텍스트 입출력만 다뤄서 백엔드 핵심 흐름(DB → API → 외부 API 연동)을 가장 빠르게 경험할 수 있음
 - 학습 목적이므로 편의 라이브러리 최소화, 핵심 로직은 직접 구현 우선
 
+- expo-linear-gradient 설치 시 ScoreBar의 반투명 오버레이를 실제 LinearGradient로 개선 가능
+- 다크 모드 지원 시 theme.ts의 팔레트를 light/dark 두 세트로 분기하는 구조 고려
+
 ---
 
-_Last updated: 2026-04-01 after M002 (TanStack Query 도입 및 UX 개선) completion_
+_Last updated: 2026-04-01 after M004 (Indigo 팔레트 기반 앱 전체 리디자인) completion_
