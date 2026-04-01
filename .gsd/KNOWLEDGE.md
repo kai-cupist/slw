@@ -65,3 +65,9 @@
 - **발견:** M002/S01/T03
 - **내용:** write/[submissionId].tsx에서 서버에서 로드한 submission.content로 content state를 초기화할 때, useEffect 의존성을 `[submission?.content]`가 아닌 `[submission?.id]`로 설정해야 한다. content를 의존성으로 쓰면 사용자가 수정할 때마다 서버 원본으로 덮어써진다.
 - **영향:** 사용자 입력 중 content 초기화 재실행 방지
+
+## K012 — pull-to-refresh는 isFetching + refetch를 FlatList에 직접 연결
+
+- **발견:** M002/S03/T01
+- **내용:** TanStack Query에서 pull-to-refresh를 구현할 때 별도 상태가 필요 없다. `useQuery`의 destructure에서 `isFetching`과 `refetch`를 가져와 FlatList의 `refreshing={isFetching}` + `onRefresh={refetch}`에 직접 연결하면 된다. 여러 쿼리를 묶어 새로고침하려면 각 useQuery에서 refetch를 꺼내 handleRefresh 콜백으로 묶는다.
+- **영향:** pull-to-refresh 구현 시 불필요한 useState/로딩 상태 추가 방지

@@ -6,17 +6,17 @@
 
 ## Current State
 
-**M001 (쓰기 평가 MVP) 완료. M002 S01 완료 중.**
+**M001 (쓰기 평가 MVP) 완료. M002 (TanStack Query 도입 및 UX 개선) 완료.**
 
 M001에서 "주제 선택 → 답안 작성 → 제출 → AI 평가 → 피드백 확인" 핵심 흐름이 백엔드 API + Expo 모바일 앱으로 끝까지 동작하는 v1이 완성되었다.
 
-M002 S01에서 모바일 앱의 서버 상태 관리를 TanStack Query(v5)로 전환 완료. 5개 화면 모두에서 fetch/useEffect 패턴이 제거되고 공유 hooks 레이어(`lib/hooks/queries.ts`, `lib/hooks/mutations.ts`)를 통해 데이터 패칭이 이루어진다.
+M002에서 모바일 앱의 서버 상태 관리를 TanStack Query(v5)로 완전 전환하고, draft 이어쓰기 흐름과 pull-to-refresh·자동 갱신 UX를 완성했다. fetch/useEffect 패턴이 공유 hooks 레이어(`lib/hooks/queries.ts`, `lib/hooks/mutations.ts`)로 완전히 대체되었다.
 
 ### 구현된 기능
 - **백엔드 (NestJS):** 14개 REST API 엔드포인트 — 주제 2개, 답안 6개, 평가 4개, 헬스체크 1개, Swagger 1개
 - **데이터베이스 (PostgreSQL 16):** 4개 테이블(schema_migrations, prompts, submissions, evaluations) + 30개 시드 데이터
 - **AI 평가 (Groq LLM):** Llama 3.3 70B 기반 문법/논리/표현력/주제 적절성 4항목 평가
-- **모바일 앱 (Expo SDK 55):** 7개 화면 — 주제 목록, 주제 상세, 답안 작성, 평가 결과, 이력/추이
+- **모바일 앱 (Expo SDK 55):** 7개 화면 — 주제 목록, 주제 상세, 답안 작성, 평가 결과, 이력/추이. TanStack Query v5 기반 서버 상태 관리, draft 이어쓰기 흐름, pull-to-refresh, 평가 후 캐시 자동 갱신
 - **인프라:** Docker Compose(PostgreSQL + NestJS), 수동 SQL 마이그레이션(6개 파일), Swagger UI
 
 ## Core Value
@@ -69,10 +69,10 @@ M002 S01에서 모바일 앱의 서버 상태 관리를 TanStack Query(v5)로 �
 ## Follow-ups (v2 후보)
 
 - 실제 인증 체계 도입 (JWT 등)
-- TanStack Query 도입 (API 엔드포인트 증가 시)
 - 오프라인 지원 및 캐싱 전략
 - 차트 라이브러리 도입으로 점수 추이 시각화 개선
 - 같은 주제에 대한 중복 draft 관리 정책
+- 수동 기기 실행 테스트 — pull-to-refresh 제스처와 평가 후 자동 갱신 동작 확인 필요
 
 ## Context
 
@@ -83,4 +83,4 @@ M002 S01에서 모바일 앱의 서버 상태 관리를 TanStack Query(v5)로 �
 
 ---
 
-_Last updated: 2026-03-31 after M001 (쓰기 평가 MVP) completion_
+_Last updated: 2026-04-01 after M002 (TanStack Query 도입 및 UX 개선) completion_
