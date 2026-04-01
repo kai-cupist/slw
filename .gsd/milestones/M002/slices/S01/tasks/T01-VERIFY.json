@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M002/S01/T01",
+  "timestamp": 1775017288477,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "cd mobile",
+      "exitCode": 0,
+      "durationMs": 31,
+      "verdict": "pass"
+    },
+    {
+      "command": "grep -q '@tanstack/react-query' package.json",
+      "exitCode": 2,
+      "durationMs": 34,
+      "verdict": "fail"
+    },
+    {
+      "command": "grep -q 'QueryClientProvider' app/_layout.tsx",
+      "exitCode": 2,
+      "durationMs": 34,
+      "verdict": "fail"
+    },
+    {
+      "command": "echo 'OK'",
+      "exitCode": 0,
+      "durationMs": 32,
+      "verdict": "pass"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2
+}

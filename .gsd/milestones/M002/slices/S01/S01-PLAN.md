@@ -24,7 +24,7 @@
   - Estimate: 20m
   - Files: mobile/package.json, mobile/app/_layout.tsx
   - Verify: cd mobile && grep -q '@tanstack/react-query' package.json && grep -q 'QueryClientProvider' app/_layout.tsx && echo 'OK'
-- [ ] **T02: lib/hooks/ 디렉토리 생성 및 query/mutation hooks 작성** — 이 태스크는 5개 화면이 공통으로 사용할 hooks를 한 곳에 집중시킨다. queryKey 일관성과 staleTime 설정이 핵심이다.
+- [x] **T02: mobile/lib/hooks/ 디렉토리에 6개 query hooks와 4개 mutation hooks를 작성하여 5개 화면이 공유할 데이터 패칭 레이어 완성** — 이 태스크는 5개 화면이 공통으로 사용할 hooks를 한 곳에 집중시킨다. queryKey 일관성과 staleTime 설정이 핵심이다.
 
 ## Steps
 
