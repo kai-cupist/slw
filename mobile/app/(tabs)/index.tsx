@@ -9,31 +9,11 @@ import {
   View,
 } from 'react-native';
 
+import { CategoryBadge, DifficultyBadge } from '../../components/Badge';
+import { ErrorView } from '../../components/ErrorView';
+import { LoadingView } from '../../components/LoadingView';
 import { usePrompts } from '../../lib/hooks/queries';
 import type { Prompt } from '../../lib/types';
-
-const DIFFICULTY_COLORS: Record<string, string> = {
-  beginner: '#4CAF50',
-  intermediate: '#FF9800',
-  advanced: '#F44336',
-};
-
-function DifficultyBadge({ difficulty }: { difficulty: string }) {
-  const bg = DIFFICULTY_COLORS[difficulty] ?? '#9E9E9E';
-  return (
-    <View style={[styles.badge, { backgroundColor: bg }]}>
-      <Text style={styles.badgeText}>{difficulty}</Text>
-    </View>
-  );
-}
-
-function CategoryBadge({ category }: { category: string }) {
-  return (
-    <View style={[styles.badge, { backgroundColor: '#2196F3' }]}>
-      <Text style={styles.badgeText}>{category}</Text>
-    </View>
-  );
-}
 
 export default function PromptsScreen() {
   const router = useRouter();
@@ -87,23 +67,11 @@ export default function PromptsScreen() {
   }, [isFetchingNextPage]);
 
   if (isLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2196F3" />
-        <Text style={styles.loadingText}>주제를 불러오는 중...</Text>
-      </View>
-    );
+    return <LoadingView text="주제를 불러오는 중..." />;
   }
 
   if (error) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.errorText}>{error.message}</Text>
-        <Pressable style={styles.retryButton} onPress={() => refetch()}>
-          <Text style={styles.retryButtonText}>다시 시도</Text>
-        </Pressable>
-      </View>
-    );
+    return <ErrorView message={error.message} onRetry={refetch} />;
   }
 
   if (prompts.length === 0) {
@@ -135,28 +103,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 14,
-    color: '#666',
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#F44336',
-    textAlign: 'center',
-    marginBottom: 16,
-  },
-  retryButton: {
-    backgroundColor: '#2196F3',
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  retryButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
   },
   emptyText: {
     fontSize: 16,
@@ -194,16 +140,6 @@ const styles = StyleSheet.create({
   badgeRow: {
     flexDirection: 'row',
     gap: 8,
-  },
-  badge: {
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 12,
-  },
-  badgeText: {
-    fontSize: 12,
-    color: '#fff',
-    fontWeight: '500',
   },
   footerLoader: {
     paddingVertical: 16,

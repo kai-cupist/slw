@@ -9,13 +9,10 @@ import {
   View,
 } from 'react-native';
 
+import { CategoryBadge, DifficultyBadge } from '../../components/Badge';
+import { ErrorView } from '../../components/ErrorView';
+import { LoadingView } from '../../components/LoadingView';
 import { usePrompt, usePromptDraft } from '../../lib/hooks/queries';
-
-const DIFFICULTY_COLORS: Record<string, string> = {
-  beginner: '#4CAF50',
-  intermediate: '#FF9800',
-  advanced: '#F44336',
-};
 
 export default function PromptDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -36,25 +33,16 @@ export default function PromptDetailScreen() {
   };
 
   if (isLoading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#2196F3" />
-        <Text style={styles.loadingText}>주제를 불러오는 중...</Text>
-      </View>
-    );
+    return <LoadingView text="주제를 불러오는 중..." />;
   }
 
   if (error || !prompt) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.errorText}>
-          {error?.message ?? '주제를 찾을 수 없습니다.'}
-        </Text>
-      </View>
+      <ErrorView
+        message={error?.message ?? '주제를 찾을 수 없습니다.'}
+      />
     );
   }
-
-  const difficultyColor = DIFFICULTY_COLORS[prompt.difficulty] ?? '#9E9E9E';
 
   return (
     <View style={styles.container}>
@@ -62,12 +50,8 @@ export default function PromptDetailScreen() {
         <Text style={styles.title}>{prompt.title}</Text>
 
         <View style={styles.metaRow}>
-          <View style={[styles.badge, { backgroundColor: '#2196F3' }]}>
-            <Text style={styles.badgeText}>{prompt.category}</Text>
-          </View>
-          <View style={[styles.badge, { backgroundColor: difficultyColor }]}>
-            <Text style={styles.badgeText}>{prompt.difficulty}</Text>
-          </View>
+          <CategoryBadge category={prompt.category} />
+          <DifficultyBadge difficulty={prompt.difficulty} />
         </View>
 
         <Text style={styles.description}>{prompt.description}</Text>
@@ -110,23 +94,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  center: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  loadingText: {
-    marginTop: 12,
-    fontSize: 14,
-    color: '#666',
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#F44336',
-    textAlign: 'center',
-    marginBottom: 16,
-  },
   scroll: {
     padding: 20,
   },
@@ -140,16 +107,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
     marginBottom: 20,
-  },
-  badge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  badgeText: {
-    fontSize: 13,
-    color: '#fff',
-    fontWeight: '500',
   },
   description: {
     fontSize: 16,

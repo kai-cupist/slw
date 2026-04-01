@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "taskId": "T01",
+  "unitId": "M003/S04/T01",
+  "timestamp": 1775026815686,
+  "passed": false,
+  "discoverySource": "task-plan",
+  "checks": [
+    {
+      "command": "test -f mobile/lib/theme.ts",
+      "exitCode": 0,
+      "durationMs": 42,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f mobile/components/Badge.tsx",
+      "exitCode": 0,
+      "durationMs": 62,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f mobile/components/ScoreBar.tsx",
+      "exitCode": 0,
+      "durationMs": 133,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f mobile/components/LoadingView.tsx",
+      "exitCode": 0,
+      "durationMs": 65,
+      "verdict": "pass"
+    },
+    {
+      "command": "test -f mobile/components/ErrorView.tsx",
+      "exitCode": 0,
+      "durationMs": 64,
+      "verdict": "pass"
+    },
+    {
+      "command": "cd mobile",
+      "exitCode": 0,
+      "durationMs": 41,
+      "verdict": "pass"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 1,
+      "durationMs": 892,
+      "verdict": "fail"
+    }
+  ],
+  "retryAttempt": 1,
+  "maxRetries": 2
+}

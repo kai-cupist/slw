@@ -36,7 +36,7 @@
   - Estimate: 45m
   - Files: mobile/lib/theme.ts, mobile/components/Badge.tsx, mobile/components/ScoreBar.tsx, mobile/components/LoadingView.tsx, mobile/components/ErrorView.tsx
   - Verify: test -f mobile/lib/theme.ts && test -f mobile/components/Badge.tsx && test -f mobile/components/ScoreBar.tsx && test -f mobile/components/LoadingView.tsx && test -f mobile/components/ErrorView.tsx && cd mobile && npx tsc --noEmit
-- [ ] **T02: 주제 목록 & 주제 상세 화면에 theme/Badge 컴포넌트 적용** — index.tsx와 prompts/[id].tsx에서 인라인 DIFFICULTY_COLORS, DifficultyBadge, CategoryBadge를 제거하고 theme와 Badge 컴포넌트로 교체한다.
+- [x] **T02: index.tsx와 prompts/[id].tsx에서 인라인 DIFFICULTY_COLORS·badge 코드를 공통 Badge/LoadingView/ErrorView 컴포넌트로 교체했다** — index.tsx와 prompts/[id].tsx에서 인라인 DIFFICULTY_COLORS, DifficultyBadge, CategoryBadge를 제거하고 theme와 Badge 컴포넌트로 교체한다.
 
 ## Steps
 
