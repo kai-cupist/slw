@@ -45,7 +45,7 @@ export default function RootLayout() {
             options={{ title: '주제 상세', headerBackTitle: '목록' }}
           />
           <Stack.Screen
-            name="write/[submissionId]"
+            name="write/index"
             options={{ title: '답안 작성', headerBackTitle: '뒤로' }}
           />
           <Stack.Screen

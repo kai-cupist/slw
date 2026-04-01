@@ -2,7 +2,6 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -10,7 +9,6 @@ import {
   View,
 } from 'react-native';
 
-import { useCreateSubmission } from '../../lib/hooks/mutations';
 import { usePrompt, usePromptDraft } from '../../lib/hooks/queries';
 
 const DIFFICULTY_COLORS: Record<string, string> = {
@@ -24,26 +22,17 @@ export default function PromptDetailScreen() {
   const router = useRouter();
 
   const { data: prompt, isLoading, error } = usePrompt(id);
-  const { mutateAsync: createSubmission, isPending: creating } =
-    useCreateSubmission();
   const { data: draftResult, isLoading: draftLoading } = usePromptDraft(id);
   const existingDraft = draftResult?.items[0] ?? null;
 
   const handleContinueWriting = () => {
     if (!existingDraft) return;
-    router.push(`/write/${existingDraft.id}`);
+    router.push(`/write?submissionId=${existingDraft.id}`);
   };
 
-  const handleStartWriting = async () => {
-    if (!id || creating) return;
-    try {
-      const submission = await createSubmission(Number(id));
-      router.push(`/write/${submission.id}`);
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : '답안을 생성하지 못했습니다.';
-      Alert.alert('오류', message);
-    }
+  const handleStartWriting = () => {
+    if (!id) return;
+    router.push(`/write?promptId=${id}`);
   };
 
   if (isLoading) {
@@ -100,12 +89,12 @@ export default function PromptDetailScreen() {
             style={({ pressed }) => [
               styles.startButton,
               pressed && styles.startButtonPressed,
-              (creating || draftLoading) && styles.startButtonDisabled,
+              draftLoading && styles.startButtonDisabled,
             ]}
             onPress={handleStartWriting}
-            disabled={creating || draftLoading}
+            disabled={draftLoading}
           >
-            {creating || draftLoading ? (
+            {draftLoading ? (
               <ActivityIndicator size="small" color="#fff" />
             ) : (
               <Text style={styles.startButtonText}>작성 시작</Text>

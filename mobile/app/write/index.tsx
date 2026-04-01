@@ -14,38 +14,86 @@ import {
 } from 'react-native';
 
 import {
+  useCreateSubmission,
   useEvaluate,
   useSaveSubmission,
   useSubmitSubmission,
 } from '../../lib/hooks/mutations';
 import { useSubmission } from '../../lib/hooks/queries';
 
+/**
+ * 글쓰기 화면
+ *
+ * 두 가지 진입 경로:
+ * - 신규 작성: ?promptId=1  (submissionId 없음 — 첫 임시저장 시 POST /submissions)
+ * - 이어 작성: ?submissionId=4  (기존 draft 로드)
+ */
 export default function WriteScreen() {
-  const { submissionId } = useLocalSearchParams<{ submissionId: string }>();
+  const { promptId, submissionId: submissionIdParam } = useLocalSearchParams<{
+    promptId?: string;
+    submissionId?: string;
+  }>();
   const router = useRouter();
+
+  // submissionId는 신규 작성 중 첫 저장 이후 생성된다.
+  const [submissionId, setSubmissionId] = useState<string | undefined>(
+    submissionIdParam,
+  );
 
   const { data: submission, isLoading } = useSubmission(submissionId);
 
   const [content, setContent] = useState('');
   const lastSavedContent = useRef('');
+  const isCreating = useRef(false);
 
-  // 첫 로드 시 서버 content로 초기화 (submission.id 변경 시에만 실행)
+  // 이어 작성: 서버 content로 초기화
   useEffect(() => {
     if (submission?.content != null) {
       setContent(submission.content);
       lastSavedContent.current = submission.content;
     }
-  }, [submission?.id]);
+  }, [submission]);
 
+  const { mutateAsync: createSubmission } = useCreateSubmission();
   const { mutateAsync: saveSubmission, isPending: saving } =
     useSaveSubmission();
   const { mutateAsync: submitSubmission } = useSubmitSubmission();
   const { mutateAsync: evaluate, isPending: submitting } = useEvaluate();
 
-  const handleSave = async () => {
-    if (!submissionId || saving) return;
+  /**
+   * draft가 없으면 먼저 생성하고, 있으면 content를 저장한다.
+   * 첫 저장 시 POST → 이후 저장은 PATCH.
+   */
+  const ensureCreatedAndSave = async (text: string): Promise<string> => {
+    if (submissionId) {
+      await saveSubmission({ submissionId, content: text });
+      return submissionId;
+    }
+
+    // 중복 호출 방지 (이미 생성 중이면 대기)
+    if (isCreating.current) {
+      throw new Error('저장 중입니다. 잠시 후 다시 시도해주세요.');
+    }
+
+    if (!promptId) {
+      throw new Error('주제 정보가 없습니다.');
+    }
+
+    isCreating.current = true;
     try {
-      await saveSubmission({ submissionId, content });
+      const created = await createSubmission(Number(promptId));
+      setSubmissionId(String(created.id));
+      await saveSubmission({ submissionId: String(created.id), content: text });
+      return String(created.id);
+    } finally {
+      isCreating.current = false;
+    }
+  };
+
+  const handleSave = async () => {
+    if (saving) return;
+    try {
+      await ensureCreatedAndSave(content);
       lastSavedContent.current = content;
       Alert.alert('저장 완료', '임시저장되었습니다.');
     } catch (err) {
@@ -56,7 +104,7 @@ export default function WriteScreen() {
   };
 
   const handleSubmit = async () => {
-    if (!submissionId || submitting) return;
+    if (submitting) return;
 
     const trimmed = content.trim();
     if (trimmed.length === 0) {
@@ -64,28 +112,22 @@ export default function WriteScreen() {
       return;
     }
 
-    // 변경 사항이 있으면 먼저 저장
-    if (content !== lastSavedContent.current) {
-      try {
-        await saveSubmission({ submissionId, content });
-        lastSavedContent.current = content;
-      } catch (err) {
-        const message =
-          err instanceof Error ? err.message : '저장에 실패했습니다.';
-        Alert.alert('오류', message);
-        return;
-      }
-    }
-
     try {
-      // 1. 제출
-      await submitSubmission(submissionId);
+      // 1. 변경분이 있으면 저장 (없으면 생성만)
+      let sid = submissionId;
+      if (!sid || content !== lastSavedContent.current) {
+        sid = await ensureCreatedAndSave(content);
+        lastSavedContent.current = content;
+      }
 
-      // 2. 평가 요청
-      await evaluate(submissionId);
+      // 2. 제출
+      await submitSubmission(sid);
 
-      // 3. 결과 화면으로 이동
-      router.replace(`/evaluation/${submissionId}`);
+      // 3. 평가
+      await evaluate(sid);
+
+      // 4. 결과 화면
+      router.replace(`/evaluation/${sid}`);
     } catch (err) {
       const message =
         err instanceof Error
@@ -95,7 +137,8 @@ export default function WriteScreen() {
     }
   };
 
-  if (isLoading) {
+  // 이어 작성인데 submission 로딩 중
+  if (submissionIdParam && isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#2196F3" />
@@ -104,7 +147,7 @@ export default function WriteScreen() {
     );
   }
 
-  if (!submission) {
+  if (submissionIdParam && !isLoading && !submission) {
     return (
       <View style={styles.center}>
         <Text style={styles.errorText}>답안을 찾을 수 없습니다.</Text>
@@ -112,7 +155,7 @@ export default function WriteScreen() {
     );
   }
 
-  const isSubmitted = submission.status !== 'draft';
+  const isSubmitted = submission != null && submission.status !== 'draft';
   const hasUnsaved = content !== lastSavedContent.current;
 
   return (
