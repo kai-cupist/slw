@@ -30,7 +30,11 @@ export default function TabLayout() {
           tabBarLabel: '주제',
           tabBarIcon: ({ color, focused }) => (
             <SymbolView
-              name={{ ios: 'list.bullet', android: 'format_list_bulleted', web: 'format_list_bulleted' }}
+              name={{
+                ios: 'list.bullet',
+                android: 'format_list_bulleted',
+                web: 'format_list_bulleted',
+              }}
               size={22}
               tintColor={color}
               weight={focused ? 'semibold' : 'regular'}
@@ -45,7 +49,11 @@ export default function TabLayout() {
           tabBarLabel: '이력',
           tabBarIcon: ({ color, focused }) => (
             <SymbolView
-              name={{ ios: 'clock.arrow.circlepath', android: 'history', web: 'history' }}
+              name={{
+                ios: 'clock.arrow.circlepath',
+                android: 'history',
+                web: 'history',
+              }}
               size={22}
               tintColor={color}
               weight={focused ? 'semibold' : 'regular'}

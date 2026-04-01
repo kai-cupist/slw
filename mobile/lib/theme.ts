@@ -10,34 +10,34 @@
 
 export const colors = {
   // ── 주조색 (Indigo) ──────────────────────────────────────────
-  primary: '#5C6BC0',        // Indigo 500
-  primaryLight: '#8E99F3',  // Indigo 300 — 밝은 하이라이트
-  primaryDark: '#3949AB',   // Indigo 700 — 프레스 상태, 강조
+  primary: '#5C6BC0', // Indigo 500
+  primaryLight: '#8E99F3', // Indigo 300 — 밝은 하이라이트
+  primaryDark: '#3949AB', // Indigo 700 — 프레스 상태, 강조
   primarySurface: '#EDE7F6', // Indigo 50 — 배지 배경, 연한 강조
 
   // ── 상태 색상 ────────────────────────────────────────────────
-  success: '#2E7D32',        // Green 800
-  successLight: '#E8F5E9',  // Green 50
-  warning: '#F57C00',        // Orange 700
-  warningLight: '#FFF3E0',  // Orange 50
-  danger: '#C62828',         // Red 800
-  dangerLight: '#FFEBEE',   // Red 50
+  success: '#2E7D32', // Green 800
+  successLight: '#E8F5E9', // Green 50
+  warning: '#F57C00', // Orange 700
+  warningLight: '#FFF3E0', // Orange 50
+  danger: '#C62828', // Red 800
+  dangerLight: '#FFEBEE', // Red 50
 
   // ── 배경 & 서피스 ────────────────────────────────────────────
-  background: '#F8F7FF',     // 따뜻한 오프화이트 (Indigo 미세 틴트)
+  background: '#F8F7FF', // 따뜻한 오프화이트 (Indigo 미세 틴트)
   surface: '#FFFFFF',
   surfaceElevated: '#FFFFFF', // 카드 배경
   inputBackground: '#F3F2FA', // 입력창 배경
 
   // ── 텍스트 ───────────────────────────────────────────────────
-  textPrimary: '#1A1A2E',    // 거의 검정 — 따뜻한 다크 네이비
-  textSecondary: '#4A4A6A',  // 중간 톤
-  textMuted: '#8888AA',      // 힌트, 보조 정보
-  textOnPrimary: '#FFFFFF',  // 프라이머리 배경 위 텍스트
+  textPrimary: '#1A1A2E', // 거의 검정 — 따뜻한 다크 네이비
+  textSecondary: '#4A4A6A', // 중간 톤
+  textMuted: '#8888AA', // 힌트, 보조 정보
+  textOnPrimary: '#FFFFFF', // 프라이머리 배경 위 텍스트
 
   // ── 경계선 ───────────────────────────────────────────────────
-  border: '#E2E0F0',         // 연한 Indigo 틴트 경계선
-  borderFocus: '#5C6BC0',    // 포커스 상태 경계선
+  border: '#E2E0F0', // 연한 Indigo 틴트 경계선
+  borderFocus: '#5C6BC0', // 포커스 상태 경계선
 
   // ── 난이도 ───────────────────────────────────────────────────
   difficulty: {
@@ -105,9 +105,19 @@ export const shadow = {
 /** 타이포그래피 시스템 */
 export const typography = {
   /** 화면 제목 */
-  h1: { fontSize: 26, fontWeight: '700' as const, lineHeight: 34, letterSpacing: -0.5 },
+  h1: {
+    fontSize: 26,
+    fontWeight: '700' as const,
+    lineHeight: 34,
+    letterSpacing: -0.5,
+  },
   /** 섹션 제목 */
-  h2: { fontSize: 20, fontWeight: '700' as const, lineHeight: 28, letterSpacing: -0.3 },
+  h2: {
+    fontSize: 20,
+    fontWeight: '700' as const,
+    lineHeight: 28,
+    letterSpacing: -0.3,
+  },
   /** 카드 제목 */
   h3: { fontSize: 17, fontWeight: '600' as const, lineHeight: 24 },
   /** 본문 */
@@ -115,9 +125,19 @@ export const typography = {
   /** 보조 본문 */
   bodySmall: { fontSize: 13, fontWeight: '400' as const, lineHeight: 20 },
   /** 레이블, 뱃지 */
-  label: { fontSize: 12, fontWeight: '600' as const, lineHeight: 16, letterSpacing: 0.3 },
+  label: {
+    fontSize: 12,
+    fontWeight: '600' as const,
+    lineHeight: 16,
+    letterSpacing: 0.3,
+  },
   /** 숫자 점수 */
-  score: { fontSize: 48, fontWeight: '800' as const, lineHeight: 56, letterSpacing: -1 },
+  score: {
+    fontSize: 48,
+    fontWeight: '800' as const,
+    lineHeight: 56,
+    letterSpacing: -1,
+  },
   /** 버튼 */
   button: { fontSize: 16, fontWeight: '600' as const, lineHeight: 24 },
 };

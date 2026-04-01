@@ -228,7 +228,10 @@ export default function WriteScreen() {
             >
               {isSubmitting ? (
                 <View style={styles.submitInProgress}>
-                  <ActivityIndicator size="small" color={colors.textOnPrimary} />
+                  <ActivityIndicator
+                    size="small"
+                    color={colors.textOnPrimary}
+                  />
                   <Text style={styles.submitButtonText}>{submitPhase}</Text>
                 </View>
               ) : (

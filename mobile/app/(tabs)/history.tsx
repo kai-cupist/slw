@@ -142,7 +142,10 @@ export default function HistoryScreen() {
           overshootRight={false}
         >
           <Pressable
-            style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+            style={({ pressed }) => [
+              styles.card,
+              pressed && styles.cardPressed,
+            ]}
             onPress={() => router.push(`/evaluation/${item.submission_id}`)}
           >
             <View style={styles.cardTop}>
@@ -167,7 +170,9 @@ export default function HistoryScreen() {
             </View>
             <View style={styles.cardBottom}>
               <DifficultyBadge difficulty={item.prompt_difficulty} />
-              <Text style={styles.cardDate}>{formatDate(item.evaluated_at)}</Text>
+              <Text style={styles.cardDate}>
+                {formatDate(item.evaluated_at)}
+              </Text>
             </View>
           </Pressable>
         </ReanimatedSwipeable>

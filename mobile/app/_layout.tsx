@@ -3,13 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  Animated,
-  Dimensions,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import { Animated, Dimensions, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { colors, shadow, typography } from '../lib/theme';
@@ -108,13 +102,9 @@ export default function RootLayout() {
   if (showSplash || !isLoaded) {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
-        {showSplash && (
-          <SplashScreen onFinish={() => setShowSplash(false)} />
-        )}
+        {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
         {/* isLoaded 되지 않았으면 스플래시 뒤에 숨어 대기 */}
-        {!showSplash && !isLoaded && (
-          <View style={styles.loadingBg} />
-        )}
+        {!showSplash && !isLoaded && <View style={styles.loadingBg} />}
       </GestureHandlerRootView>
     );
   }
@@ -135,15 +125,24 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen
               name="prompts/[id]"
-              options={{ title: '주제 상세', headerBackButtonDisplayMode: 'minimal' }}
+              options={{
+                title: '주제 상세',
+                headerBackButtonDisplayMode: 'minimal',
+              }}
             />
             <Stack.Screen
               name="write/index"
-              options={{ title: '답안 작성', headerBackButtonDisplayMode: 'minimal' }}
+              options={{
+                title: '답안 작성',
+                headerBackButtonDisplayMode: 'minimal',
+              }}
             />
             <Stack.Screen
               name="evaluation/[submissionId]"
-              options={{ title: '평가 결과', headerBackButtonDisplayMode: 'minimal' }}
+              options={{
+                title: '평가 결과',
+                headerBackButtonDisplayMode: 'minimal',
+              }}
             />
           </Stack>
           <StatusBar style="dark" />

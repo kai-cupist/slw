@@ -38,11 +38,7 @@ export default function PromptDetailScreen() {
   }
 
   if (error || !prompt) {
-    return (
-      <ErrorView
-        message={error?.message ?? '주제를 찾을 수 없습니다.'}
-      />
-    );
+    return <ErrorView message={error?.message ?? '주제를 찾을 수 없습니다.'} />;
   }
 
   return (
