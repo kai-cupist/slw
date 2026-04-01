@@ -47,10 +47,11 @@ export class SubmissionsService {
     }
 
     // 이미 draft가 존재하면 중복 생성 방지 — 기존 draft 반환
-    const existingDraft = await this.submissionsRepository.findDraftByUserAndPrompt(
-      userId,
-      dto.prompt_id,
-    );
+    const existingDraft =
+      await this.submissionsRepository.findDraftByUserAndPrompt(
+        userId,
+        dto.prompt_id,
+      );
     if (existingDraft) {
       return existingDraft;
     }

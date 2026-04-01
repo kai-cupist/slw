@@ -22,7 +22,9 @@ export class GetSubmissionsDto extends PaginationDto {
   @IsEnum(SubmissionStatus)
   status?: SubmissionStatus;
 
-  @ApiPropertyOptional({ description: '주제 ID 필터 — 특정 프롬프트의 답안만 조회' })
+  @ApiPropertyOptional({
+    description: '주제 ID 필터 — 특정 프롬프트의 답안만 조회',
+  })
   @IsOptional()
   @Type(() => Number)
   @IsInt()

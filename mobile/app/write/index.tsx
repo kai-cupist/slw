@@ -49,11 +49,13 @@ export default function WriteScreen() {
   const isCreating = useRef(false);
 
   // 이어 작성: 서버 content로 초기화
+  // submission?.id를 의존성으로 사용 — content 변경 시 재실행 방지 (K011)
   useEffect(() => {
     if (submission?.content != null) {
       setContent(submission.content);
       lastSavedContent.current = submission.content;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [submission?.id]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
