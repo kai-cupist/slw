@@ -37,7 +37,7 @@ function CategoryBadge({ category }: { category: string }) {
 
 export default function PromptsScreen() {
   const router = useRouter();
-  const { data, isLoading, error, refetch } = usePrompts();
+  const { data, isLoading, error, refetch, isFetching } = usePrompts();
   const prompts = data?.items ?? [];
 
   const renderItem = useCallback(
@@ -95,6 +95,8 @@ export default function PromptsScreen() {
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       contentContainerStyle={styles.list}
+      refreshing={isFetching}
+      onRefresh={refetch}
     />
   );
 }

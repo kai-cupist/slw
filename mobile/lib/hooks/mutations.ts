@@ -54,11 +54,16 @@ export function useSubmitSubmission() {
 /**
  * AI 평가 요청
  * POST /submissions/:id/evaluate 호출 후 Evaluation을 반환한다.
- * invalidate는 호출측(화면)에서 결과를 받은 뒤 처리한다.
+ * 성공 시 evaluationHistory와 scoreTrend 캐시를 무효화하여 이력 화면을 자동 갱신한다.
  */
 export function useEvaluate() {
+  const queryClient = useQueryClient();
   return useMutation<Evaluation, Error, string>({
     mutationFn: (submissionId: string) =>
       api.post<Evaluation>(`/submissions/${submissionId}/evaluate`, {}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['evaluationHistory'] });
+      queryClient.invalidateQueries({ queryKey: ['scoreTrend'] });
+    },
   });
 }

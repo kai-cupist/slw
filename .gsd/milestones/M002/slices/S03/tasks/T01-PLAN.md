@@ -1,10 +1,12 @@
-# S03: UX 향상 — pull-to-refresh 및 자동 갱신
+---
+estimated_steps: 26
+estimated_files: 3
+skills_used: []
+---
 
-**Goal:** 목록 화면에 pull-to-refresh를 연결하고, 답안 제출·평가 후 이력 데이터를 자동으로 갱신한다
-**Demo:** After this: 목록 화면에서 당겨서 새로고침이 동작하고, 답안 제출 후 이력 화면이 자동으로 갱신된다
+# T01: pull-to-refresh 및 평가 후 자동 갱신 연결
 
-## Tasks
-- [x] **T01: pull-to-refresh(index·history)와 평가 후 이력·트렌드 캐시 자동 갱신 연결** — 세 파일에 최소 변경을 적용한다.
+세 파일에 최소 변경을 적용한다.
 
 1. `mobile/lib/hooks/mutations.ts`
    - 파일 상단에 `useQueryClient` import 추가 (이미 `useMutation`을 import하는 라인에 함께)
@@ -34,6 +36,19 @@
    - FlatList에 `refreshing={isFetching}` + `onRefresh={handleRefresh}` 추가
 
 주의: `TrendSection` 컴포넌트는 내부에서 이미 `useScoreTrend()`를 호출한다. HistoryScreen에서 추가 호출 후 `refetchTrend()`를 실행하면 동일 queryKey 캐시가 무효화되어 TrendSection의 데이터도 갱신된다. TrendSection 컴포넌트 자체는 수정하지 않는다.
-  - Estimate: 20m
-  - Files: mobile/lib/hooks/mutations.ts, mobile/app/(tabs)/index.tsx, mobile/app/(tabs)/history.tsx
-  - Verify: cd mobile && npm run typecheck && grep -n 'refreshing\|onRefresh' app/\(tabs\)/index.tsx app/\(tabs\)/history.tsx && grep -n 'invalidateQueries.*evaluationHistory\|invalidateQueries.*scoreTrend' lib/hooks/mutations.ts
+
+## Inputs
+
+- ``mobile/lib/hooks/mutations.ts` — useEvaluate 함수 (onSuccess 없음, queryClient 없음)`
+- ``mobile/app/(tabs)/index.tsx` — usePrompts hook 사용, FlatList에 refreshing/onRefresh 없음`
+- ``mobile/app/(tabs)/history.tsx` — useEvaluationHistory hook 사용, FlatList에 refreshing/onRefresh 없음, useScoreTrend는 TrendSection 내부에서만 사용`
+
+## Expected Output
+
+- ``mobile/lib/hooks/mutations.ts` — useEvaluate에 queryClient + onSuccess(invalidateQueries) 추가`
+- ``mobile/app/(tabs)/index.tsx` — FlatList에 refreshing={isFetching} + onRefresh={refetch} 추가`
+- ``mobile/app/(tabs)/history.tsx` — HistoryScreen에 useScoreTrend refetch 추가, handleRefresh, FlatList props 추가`
+
+## Verification
+
+cd mobile && npm run typecheck && grep -n 'refreshing\|onRefresh' app/\(tabs\)/index.tsx app/\(tabs\)/history.tsx && grep -n 'invalidateQueries.*evaluationHistory\|invalidateQueries.*scoreTrend' lib/hooks/mutations.ts

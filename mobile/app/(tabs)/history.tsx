@@ -89,8 +89,14 @@ function TrendSection() {
 
 export default function HistoryScreen() {
   const router = useRouter();
-  const { data, isLoading, error, refetch } = useEvaluationHistory();
+  const { data, isLoading, error, refetch, isFetching } = useEvaluationHistory();
+  const { refetch: refetchTrend } = useScoreTrend();
   const items = data?.items ?? [];
+
+  const handleRefresh = useCallback(() => {
+    refetch();
+    refetchTrend();
+  }, [refetch, refetchTrend]);
 
   const renderItem = useCallback(
     ({ item }: { item: EvaluationHistory }) => {
@@ -168,6 +174,8 @@ export default function HistoryScreen() {
       keyExtractor={keyExtractor}
       contentContainerStyle={styles.list}
       ListHeaderComponent={<TrendSection />}
+      refreshing={isFetching}
+      onRefresh={handleRefresh}
     />
   );
 }
