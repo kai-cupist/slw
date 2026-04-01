@@ -21,7 +21,7 @@ import {
   useSubmitSubmission,
 } from '../../lib/hooks/mutations';
 import { useSubmission } from '../../lib/hooks/queries';
-import { colors } from '../../lib/theme';
+import { colors, radius, shadow, spacing, typography } from '../../lib/theme';
 
 /**
  * 글쓰기 화면
@@ -227,8 +227,8 @@ export default function WriteScreen() {
               disabled={saving || isSubmitting}
             >
               {isSubmitting ? (
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <ActivityIndicator size="small" color="#fff" />
+                <View style={styles.submitInProgress}>
+                  <ActivityIndicator size="small" color={colors.textOnPrimary} />
                   <Text style={styles.submitButtonText}>{submitPhase}</Text>
                 </View>
               ) : (
@@ -245,88 +245,95 @@ export default function WriteScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.background,
   },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
+    padding: spacing.xl,
   },
   errorText: {
-    fontSize: 16,
+    ...typography.body,
     color: colors.danger,
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: spacing.lg,
   },
   scroll: {
     flexGrow: 1,
-    padding: 16,
+    padding: spacing.lg,
   },
   statusBanner: {
-    backgroundColor: '#FFF3E0',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
+    backgroundColor: colors.warningLight,
+    padding: spacing.md,
+    borderRadius: radius.sm,
+    marginBottom: spacing.md,
+    borderLeftWidth: 3,
+    borderLeftColor: colors.warning,
   },
   statusText: {
-    color: '#E65100',
-    fontSize: 14,
-    fontWeight: '500',
+    ...typography.bodySmall,
+    color: colors.warning,
+    fontWeight: '600',
     textAlign: 'center',
   },
   textInput: {
     flex: 1,
     minHeight: 300,
-    fontSize: 16,
-    lineHeight: 24,
+    ...typography.body,
     color: colors.textPrimary,
     backgroundColor: colors.inputBackground,
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: radius.md,
+    padding: spacing.lg,
     borderWidth: 1,
     borderColor: colors.border,
   },
   footer: {
-    padding: 16,
-    paddingBottom: 32,
+    padding: spacing.lg,
+    paddingBottom: spacing.xxxl,
+    backgroundColor: colors.surface,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.border,
+    ...shadow.bar,
   },
   unsavedHint: {
-    fontSize: 12,
+    ...typography.label,
     color: colors.warning,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: spacing.sm,
   },
   buttonRow: {
     flexDirection: 'row',
-    gap: 12,
+    gap: spacing.md,
   },
   saveButton: {
     flex: 1,
-    paddingVertical: 14,
-    borderRadius: 12,
+    paddingVertical: spacing.md + 2,
+    borderRadius: radius.sm,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: colors.primary,
     backgroundColor: colors.surface,
   },
   saveButtonText: {
+    ...typography.button,
     color: colors.primary,
-    fontSize: 16,
-    fontWeight: '600',
   },
   submitButton: {
     flex: 1,
-    paddingVertical: 14,
-    borderRadius: 12,
+    paddingVertical: spacing.md + 2,
+    borderRadius: radius.sm,
     alignItems: 'center',
     backgroundColor: colors.primary,
   },
   submitButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
+    ...typography.button,
+    color: colors.textOnPrimary,
+  },
+  submitInProgress: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
   },
   buttonPressed: {
     opacity: 0.8,

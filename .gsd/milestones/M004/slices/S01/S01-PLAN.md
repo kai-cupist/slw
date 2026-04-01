@@ -20,7 +20,7 @@
   - Estimate: 30m
   - Files: mobile/app/(tabs)/index.tsx, mobile/app/prompts/[id].tsx
   - Verify: tsc --noEmit
-- [ ] **T05: 글쓰기 + 평가 결과 화면 리디자인** — write/index.tsx, evaluation/[submissionId].tsx 스타일 전면 교체
+- [x] **T05: write/index.tsx와 evaluation/[submissionId].tsx의 하드코딩 색상을 전부 Indigo 테마 토큰으로 교체하고 레이아웃 정제 완료** — write/index.tsx, evaluation/[submissionId].tsx 스타일 전면 교체
   - Estimate: 30m
   - Files: mobile/app/write/index.tsx, mobile/app/evaluation/[submissionId].tsx
   - Verify: tsc --noEmit

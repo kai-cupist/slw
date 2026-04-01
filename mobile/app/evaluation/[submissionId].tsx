@@ -8,10 +8,11 @@ import {
   View,
 } from 'react-native';
 
+import { ErrorView } from '../../components/ErrorView';
 import { LoadingView } from '../../components/LoadingView';
 import { ScoreBar } from '../../components/ScoreBar';
 import { useEvaluation, useSubmission } from '../../lib/hooks/queries';
-import { colors } from '../../lib/theme';
+import { colors, radius, shadow, spacing, typography } from '../../lib/theme';
 
 /** 점수 항목 라벨 매핑 */
 const SCORE_LABELS: Record<string, string> = {
@@ -36,11 +37,7 @@ export default function EvaluationScreen() {
   }
 
   if (error != null) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.errorText}>{error.message}</Text>
-      </View>
-    );
+    return <ErrorView message={error.message} />;
   }
 
   if (evaluation == null) {
@@ -53,6 +50,7 @@ export default function EvaluationScreen() {
 
   const feedback = evaluation.feedback;
 
+  // K013: scoreColor import 금지 — 인라인 3항 연산으로 처리
   const totalColor =
     evaluation.total_score >= 8
       ? colors.success
@@ -60,20 +58,28 @@ export default function EvaluationScreen() {
         ? colors.warning
         : colors.danger;
 
+  const totalBgColor =
+    evaluation.total_score >= 8
+      ? colors.successLight
+      : evaluation.total_score >= 5
+        ? colors.warningLight
+        : colors.dangerLight;
+
   return (
-    <ScrollView contentContainerStyle={styles.scroll}>
-      {/* 총점 */}
-      <View style={styles.totalCard}>
+    <ScrollView
+      style={styles.root}
+      contentContainerStyle={styles.scroll}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* 총점 카드 */}
+      <View style={[styles.totalCard, { backgroundColor: totalBgColor }]}>
         <Text style={styles.totalLabel}>총점</Text>
-        <Text
-          style={[
-            styles.totalScore,
-            { color: totalColor },
-          ]}
-        >
-          {evaluation.total_score}
-        </Text>
-        <Text style={styles.totalMax}> / 10</Text>
+        <View style={styles.totalScoreRow}>
+          <Text style={[styles.totalScore, { color: totalColor }]}>
+            {evaluation.total_score}
+          </Text>
+          <Text style={styles.totalMax}>/10</Text>
+        </View>
       </View>
 
       {/* 작성 내용 */}
@@ -120,7 +126,7 @@ export default function EvaluationScreen() {
         </View>
       ) : null}
 
-      {/* 목록으로 돌아가기 */}
+      {/* 돌아가기 버튼 */}
       <Pressable
         style={({ pressed }) => [
           styles.backButton,
@@ -135,107 +141,97 @@ export default function EvaluationScreen() {
 }
 
 const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
   center: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
-  },
-  errorText: {
-    fontSize: 16,
-    color: colors.danger,
-    textAlign: 'center',
-    marginBottom: 16,
+    padding: spacing.xl,
   },
   emptyText: {
-    fontSize: 16,
+    ...typography.body,
     color: colors.textMuted,
   },
   scroll: {
-    padding: 16,
-    paddingBottom: 40,
+    padding: spacing.lg,
+    paddingBottom: spacing.xxxl + spacing.xl,
   },
   totalCard: {
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    justifyContent: 'center',
-    backgroundColor: colors.surface,
-    borderRadius: 16,
-    padding: 24,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderRadius: radius.lg,
+    padding: spacing.xxl,
+    marginBottom: spacing.xl,
+    alignItems: 'center',
+    ...shadow.card,
   },
   totalLabel: {
-    fontSize: 18,
+    ...typography.label,
     color: colors.textSecondary,
-    marginRight: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: spacing.sm,
+  },
+  totalScoreRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    gap: spacing.xs,
   },
   totalScore: {
-    fontSize: 48,
-    fontWeight: '700',
+    ...typography.score,
   },
   totalMax: {
-    fontSize: 18,
+    ...typography.h2,
     color: colors.textMuted,
   },
   section: {
     backgroundColor: colors.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.08,
-    shadowRadius: 3,
-    elevation: 2,
+    borderRadius: radius.md,
+    padding: spacing.lg,
+    marginBottom: spacing.lg,
+    ...shadow.card,
   },
   sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...typography.h3,
     color: colors.textPrimary,
-    marginBottom: 14,
+    marginBottom: spacing.md,
   },
   feedbackCard: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 10,
+    backgroundColor: colors.primarySurface,
+    borderRadius: radius.sm,
+    padding: spacing.md,
+    marginBottom: spacing.sm,
   },
   feedbackLabel: {
-    fontSize: 13,
-    fontWeight: '600',
+    ...typography.label,
     color: colors.primary,
-    marginBottom: 4,
+    marginBottom: spacing.xs,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   feedbackText: {
-    fontSize: 14,
-    lineHeight: 22,
-    color: '#333',
+    ...typography.body,
+    color: colors.textSecondary,
+  },
+  submissionContent: {
+    ...typography.body,
+    color: colors.textSecondary,
   },
   backButton: {
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.primary,
-    paddingVertical: 14,
-    borderRadius: 12,
+    paddingVertical: spacing.md + 2,
+    borderRadius: radius.sm,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: spacing.sm,
   },
   backButtonText: {
+    ...typography.button,
     color: colors.primary,
-    fontSize: 16,
-    fontWeight: '600',
   },
   buttonPressed: {
     opacity: 0.7,
-  },
-  submissionContent: {
-    fontSize: 15,
-    lineHeight: 24,
-    color: '#333',
   },
 });
