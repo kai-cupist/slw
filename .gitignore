@@ -19,6 +19,7 @@ android/
 *.jsbundle
 *.hbc
 expo-env.d.ts
+mobile/.gitignore
 
 # ── 테스트 ──
 coverage/
