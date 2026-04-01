@@ -135,7 +135,7 @@ export class SubmissionsRepository {
    */
   async findAllByUser(
     userId: string,
-    filters: { status?: string },
+    filters: { status?: string; promptId?: number },
     offset: number,
     limit: number,
   ): Promise<{ rows: SubmissionWithPrompt[]; total: number }> {
@@ -147,6 +147,11 @@ export class SubmissionsRepository {
     if (filters.status) {
       conditions.push(`s.status = $${paramIndex++}`);
       params.push(filters.status);
+    }
+
+    if (filters.promptId) {
+      conditions.push(`s.prompt_id = $${paramIndex++}`);
+      params.push(filters.promptId);
     }
 
     const whereClause = `WHERE ${conditions.join(' AND ')}`;

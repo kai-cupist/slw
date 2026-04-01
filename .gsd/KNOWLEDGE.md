@@ -53,3 +53,15 @@
 - **발견:** M001/S04/T04
 - **내용:** 슬라이스 계획에서 feedback 필드를 중첩 객체(`{ grammar: { score, comment, suggestions } }`)로 기술했으나, 서버 실제 구현은 플랫 문자열 구조였다. 클라이언트 구현 시 반드시 실제 API 응답을 확인하고 맞춰야 한다.
 - **영향:** 계획-구현 간 불일치로 인한 파싱 에러 방지
+
+## K010 — TanStack Query v5 쿼리/뮤테이션 로딩 상태 네이밍 차이
+
+- **발견:** M002/S01/T03
+- **내용:** TanStack Query v5에서 쿼리(useQuery)의 로딩 상태는 `isLoading`, 뮤테이션(useMutation)의 로딩 상태는 `isPending`이다. v4와 달리 뮤테이션에서 `isLoading`이 제거되었다. 두 이름을 혼용하면 타입 에러가 발생한다.
+- **영향:** v5 마이그레이션 또는 신규 hooks 작성 시 API 혼용 방지
+
+## K011 — TanStack Query write 화면 useEffect 의존성은 submission?.id 사용
+
+- **발견:** M002/S01/T03
+- **내용:** write/[submissionId].tsx에서 서버에서 로드한 submission.content로 content state를 초기화할 때, useEffect 의존성을 `[submission?.content]`가 아닌 `[submission?.id]`로 설정해야 한다. content를 의존성으로 쓰면 사용자가 수정할 때마다 서버 원본으로 덮어써진다.
+- **영향:** 사용자 입력 중 content 초기화 재실행 방지

@@ -6,7 +6,11 @@
 
 ## Current State
 
-**M001 (쓰기 평가 MVP) 완료.** "주제 선택 → 답안 작성 → 제출 → AI 평가 → 피드백 확인" 핵심 흐름이 백엔드 API + Expo 모바일 앱으로 끝까지 동작하는 v1이 완성되었다.
+**M001 (쓰기 평가 MVP) 완료. M002 S01 완료 중.**
+
+M001에서 "주제 선택 → 답안 작성 → 제출 → AI 평가 → 피드백 확인" 핵심 흐름이 백엔드 API + Expo 모바일 앱으로 끝까지 동작하는 v1이 완성되었다.
+
+M002 S01에서 모바일 앱의 서버 상태 관리를 TanStack Query(v5)로 전환 완료. 5개 화면 모두에서 fetch/useEffect 패턴이 제거되고 공유 hooks 레이어(`lib/hooks/queries.ts`, `lib/hooks/mutations.ts`)를 통해 데이터 패칭이 이루어진다.
 
 ### 구현된 기능
 - **백엔드 (NestJS):** 14개 REST API 엔드포인트 — 주제 2개, 답안 6개, 평가 4개, 헬스체크 1개, Swagger 1개

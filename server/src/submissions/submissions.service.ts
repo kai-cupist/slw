@@ -151,7 +151,7 @@ export class SubmissionsService {
 
     const { rows, total } = await this.submissionsRepository.findAllByUser(
       userId,
-      { status: dto.status },
+      { status: dto.status, promptId: dto.promptId },
       offset,
       limit,
     );
