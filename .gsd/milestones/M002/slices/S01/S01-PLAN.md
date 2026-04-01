@@ -51,7 +51,7 @@
   - Estimate: 40m
   - Files: mobile/lib/hooks/queries.ts, mobile/lib/hooks/mutations.ts
   - Verify: test -f mobile/lib/hooks/queries.ts && test -f mobile/lib/hooks/mutations.ts && grep -q 'usePrompts' mobile/lib/hooks/queries.ts && grep -q 'useSaveSubmission' mobile/lib/hooks/mutations.ts && echo 'OK'
-- [ ] **T03: 5개 화면 fetch/useEffect → TanStack Query hooks 전환 및 타입 체크** — T01, T02 완료 후 실행. 5개 화면에서 `useState(loading/error/data)` + `useEffect` + 직접 API 호출 패턴을 T02에서 만든 hooks 호출로 교체한다. 마지막으로 `npm run typecheck`로 타입 오류 없음을 확인한다.
+- [x] **T03: 5개 화면 모두에서 fetch/useEffect/useState(loading) 블록을 제거하고 TanStack Query hooks로 교체, typecheck 0 errors 확인** — T01, T02 완료 후 실행. 5개 화면에서 `useState(loading/error/data)` + `useEffect` + 직접 API 호출 패턴을 T02에서 만든 hooks 호출로 교체한다. 마지막으로 `npm run typecheck`로 타입 오류 없음을 확인한다.
 
 ## Steps
 

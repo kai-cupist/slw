@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -13,58 +13,45 @@ import {
   View,
 } from 'react-native';
 
-import { ApiError, api } from '../../lib/api';
-import type { Evaluation, Submission } from '../../lib/types';
+import {
+  useEvaluate,
+  useSaveSubmission,
+  useSubmitSubmission,
+} from '../../lib/hooks/mutations';
+import { useSubmission } from '../../lib/hooks/queries';
 
 export default function WriteScreen() {
   const { submissionId } = useLocalSearchParams<{ submissionId: string }>();
   const router = useRouter();
 
-  const [submission, setSubmission] = useState<Submission | null>(null);
+  const { data: submission, isLoading } = useSubmission(submissionId);
+
   const [content, setContent] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const lastSavedContent = useRef('');
 
-  const fetchSubmission = useCallback(async () => {
-    if (!submissionId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await api.get<Submission>(`/submissions/${submissionId}`);
-      setSubmission(data);
-      setContent(data.content ?? '');
-      lastSavedContent.current = data.content ?? '';
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.message);
-      } else {
-        setError('답안을 불러오지 못했습니다.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [submissionId]);
-
+  // 첫 로드 시 서버 content로 초기화 (submission.id 변경 시에만 실행)
   useEffect(() => {
-    fetchSubmission();
-  }, [fetchSubmission]);
+    if (submission?.content != null) {
+      setContent(submission.content);
+      lastSavedContent.current = submission.content;
+    }
+  }, [submission?.id]);
+
+  const { mutateAsync: saveSubmission, isPending: saving } =
+    useSaveSubmission();
+  const { mutateAsync: submitSubmission } = useSubmitSubmission();
+  const { mutateAsync: evaluate, isPending: submitting } = useEvaluate();
 
   const handleSave = async () => {
     if (!submissionId || saving) return;
-    setSaving(true);
     try {
-      await api.patch<Submission>(`/submissions/${submissionId}`, { content });
+      await saveSubmission({ submissionId, content });
       lastSavedContent.current = content;
       Alert.alert('저장 완료', '임시저장되었습니다.');
     } catch (err) {
       const message =
-        err instanceof ApiError ? err.message : '저장에 실패했습니다.';
+        err instanceof Error ? err.message : '저장에 실패했습니다.';
       Alert.alert('오류', message);
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -80,40 +67,35 @@ export default function WriteScreen() {
     // 변경 사항이 있으면 먼저 저장
     if (content !== lastSavedContent.current) {
       try {
-        await api.patch<Submission>(`/submissions/${submissionId}`, {
-          content,
-        });
+        await saveSubmission({ submissionId, content });
         lastSavedContent.current = content;
       } catch (err) {
         const message =
-          err instanceof ApiError ? err.message : '저장에 실패했습니다.';
+          err instanceof Error ? err.message : '저장에 실패했습니다.';
         Alert.alert('오류', message);
         return;
       }
     }
 
-    setSubmitting(true);
     try {
       // 1. 제출
-      await api.patch<Submission>(`/submissions/${submissionId}/submit`);
+      await submitSubmission(submissionId);
 
       // 2. 평가 요청
-      await api.post<Evaluation>(`/submissions/${submissionId}/evaluate`, {});
+      await evaluate(submissionId);
 
       // 3. 결과 화면으로 이동
       router.replace(`/evaluation/${submissionId}`);
     } catch (err) {
       const message =
-        err instanceof ApiError
+        err instanceof Error
           ? err.message
           : '제출 중 오류가 발생했습니다. 다시 시도해 주세요.';
       Alert.alert('오류', message);
-    } finally {
-      setSubmitting(false);
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#2196F3" />
@@ -122,15 +104,10 @@ export default function WriteScreen() {
     );
   }
 
-  if (error || !submission) {
+  if (!submission) {
     return (
       <View style={styles.center}>
-        <Text style={styles.errorText}>
-          {error ?? '답안을 찾을 수 없습니다.'}
-        </Text>
-        <Pressable style={styles.retryButton} onPress={fetchSubmission}>
-          <Text style={styles.retryButtonText}>다시 시도</Text>
-        </Pressable>
+        <Text style={styles.errorText}>답안을 찾을 수 없습니다.</Text>
       </View>
     );
   }
@@ -230,17 +207,6 @@ const styles = StyleSheet.create({
     color: '#F44336',
     textAlign: 'center',
     marginBottom: 16,
-  },
-  retryButton: {
-    backgroundColor: '#2196F3',
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  retryButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
   },
   scroll: {
     flexGrow: 1,

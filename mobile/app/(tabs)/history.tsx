@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -9,12 +9,8 @@ import {
   View,
 } from 'react-native';
 
-import { ApiError, api } from '../../lib/api';
-import type {
-  EvaluationHistory,
-  PaginatedResponse,
-  ScoreTrend,
-} from '../../lib/types';
+import { useEvaluationHistory, useScoreTrend } from '../../lib/hooks/queries';
+import type { EvaluationHistory, ScoreTrend } from '../../lib/types';
 
 const DIFFICULTY_COLORS: Record<string, string> = {
   beginner: '#4CAF50',
@@ -60,46 +56,16 @@ function MiniBar({ score, label }: { score: number; label: string }) {
 
 /** 점수 추이 섹션 */
 function TrendSection() {
-  const [trends, setTrends] = useState<ScoreTrend[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function fetch() {
-      try {
-        const data = await api.get<ScoreTrend[]>(
-          '/evaluations/scores/trend?limit=10',
-        );
-        if (!cancelled) {
-          setTrends(data);
-        }
-      } catch {
-        if (!cancelled) {
-          setError(true);
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    }
-
-    fetch();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const { data: trends, isLoading, error } = useScoreTrend();
 
   // 에러 또는 로딩 중이면 섹션 숨김
-  if (error || loading) return null;
-  if (trends.length === 0) return null;
+  if (isLoading || error) return null;
+  if (!trends || trends.length === 0) return null;
 
   return (
     <View style={styles.trendSection}>
       <Text style={styles.trendTitle}>점수 추이 (최근 {trends.length}건)</Text>
-      {trends.map((t, idx) => (
+      {trends.map((t: ScoreTrend, idx: number) => (
         <View key={`${t.evaluated_at}-${idx}`} style={styles.trendItem}>
           <View style={styles.trendHeader}>
             <Text style={styles.trendDate}>{formatDate(t.evaluated_at)}</Text>
@@ -123,34 +89,8 @@ function TrendSection() {
 
 export default function HistoryScreen() {
   const router = useRouter();
-
-  const [items, setItems] = useState<EvaluationHistory[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchHistory = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await api.get<PaginatedResponse<EvaluationHistory>>(
-        '/evaluations/history?page=1&limit=20',
-      );
-      setItems(data.items);
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.message);
-      } else {
-        setError('이력을 불러오지 못했습니다.');
-      }
-      setItems([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchHistory();
-  }, [fetchHistory]);
+  const { data, isLoading, error, refetch } = useEvaluationHistory();
+  const items = data?.items ?? [];
 
   const renderItem = useCallback(
     ({ item }: { item: EvaluationHistory }) => {
@@ -190,7 +130,7 @@ export default function HistoryScreen() {
     [],
   );
 
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#2196F3" />
@@ -202,8 +142,8 @@ export default function HistoryScreen() {
   if (error != null) {
     return (
       <View style={styles.center}>
-        <Text style={styles.errorText}>{error}</Text>
-        <Pressable style={styles.retryButton} onPress={fetchHistory}>
+        <Text style={styles.errorText}>{error.message}</Text>
+        <Pressable style={styles.retryButton} onPress={() => refetch()}>
           <Text style={styles.retryButtonText}>다시 시도</Text>
         </Pressable>
       </View>

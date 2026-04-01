@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -9,8 +9,7 @@ import {
   View,
 } from 'react-native';
 
-import { ApiError, api } from '../../lib/api';
-import type { Evaluation } from '../../lib/types';
+import { useEvaluation } from '../../lib/hooks/queries';
 
 /** 점수 항목 라벨 매핑 */
 const SCORE_LABELS: Record<string, string> = {
@@ -55,33 +54,9 @@ export default function EvaluationScreen() {
   const { submissionId } = useLocalSearchParams<{ submissionId: string }>();
   const router = useRouter();
 
-  const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: evaluation, isLoading, error } = useEvaluation(submissionId);
 
-  const fetchEvaluation = useCallback(async () => {
-    if (!submissionId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await api.get<Evaluation>(`/evaluations/${submissionId}`);
-      setEvaluation(data);
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.message);
-      } else {
-        setError('평가 결과를 불러오지 못했습니다.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [submissionId]);
-
-  useEffect(() => {
-    fetchEvaluation();
-  }, [fetchEvaluation]);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#2196F3" />
@@ -93,10 +68,7 @@ export default function EvaluationScreen() {
   if (error != null) {
     return (
       <View style={styles.center}>
-        <Text style={styles.errorText}>{error}</Text>
-        <Pressable style={styles.retryButton} onPress={fetchEvaluation}>
-          <Text style={styles.retryButtonText}>다시 시도</Text>
-        </Pressable>
+        <Text style={styles.errorText}>{error.message}</Text>
       </View>
     );
   }
@@ -194,17 +166,6 @@ const styles = StyleSheet.create({
     color: '#F44336',
     textAlign: 'center',
     marginBottom: 16,
-  },
-  retryButton: {
-    backgroundColor: '#2196F3',
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  retryButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
   },
   emptyText: {
     fontSize: 16,

@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -10,8 +10,8 @@ import {
   View,
 } from 'react-native';
 
-import { ApiError, api } from '../../lib/api';
-import type { Prompt, Submission } from '../../lib/types';
+import { useCreateSubmission } from '../../lib/hooks/mutations';
+import { usePrompt } from '../../lib/hooks/queries';
 
 const DIFFICULTY_COLORS: Record<string, string> = {
   beginner: '#4CAF50',
@@ -23,51 +23,23 @@ export default function PromptDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
 
-  const [prompt, setPrompt] = useState<Prompt | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [creating, setCreating] = useState(false);
-
-  const fetchPrompt = useCallback(async () => {
-    if (!id) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await api.get<Prompt>(`/prompts/${id}`);
-      setPrompt(data);
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.message);
-      } else {
-        setError('주제 정보를 불러오지 못했습니다.');
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
-
-  useEffect(() => {
-    fetchPrompt();
-  }, [fetchPrompt]);
+  const { data: prompt, isLoading, error } = usePrompt(id);
+  const { mutateAsync: createSubmission, isPending: creating } =
+    useCreateSubmission();
 
   const handleStartWriting = async () => {
     if (!id || creating) return;
-    setCreating(true);
     try {
-      const submission = await api.post<Submission>('/submissions', {
-        prompt_id: Number(id),
-      });
+      const submission = await createSubmission(Number(id));
       router.push(`/write/${submission.id}`);
     } catch (err) {
       const message =
-        err instanceof ApiError ? err.message : '답안을 생성하지 못했습니다.';
+        err instanceof Error ? err.message : '답안을 생성하지 못했습니다.';
       Alert.alert('오류', message);
-    } finally {
-      setCreating(false);
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#2196F3" />
@@ -80,11 +52,8 @@ export default function PromptDetailScreen() {
     return (
       <View style={styles.center}>
         <Text style={styles.errorText}>
-          {error ?? '주제를 찾을 수 없습니다.'}
+          {error?.message ?? '주제를 찾을 수 없습니다.'}
         </Text>
-        <Pressable style={styles.retryButton} onPress={fetchPrompt}>
-          <Text style={styles.retryButtonText}>다시 시도</Text>
-        </Pressable>
       </View>
     );
   }
@@ -149,17 +118,6 @@ const styles = StyleSheet.create({
     color: '#F44336',
     textAlign: 'center',
     marginBottom: 16,
-  },
-  retryButton: {
-    backgroundColor: '#2196F3',
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  retryButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '600',
   },
   scroll: {
     padding: 20,

@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -9,8 +9,8 @@ import {
   View,
 } from 'react-native';
 
-import { ApiError, api } from '../../lib/api';
-import type { PaginatedResponse, Prompt } from '../../lib/types';
+import { usePrompts } from '../../lib/hooks/queries';
+import type { Prompt } from '../../lib/types';
 
 const DIFFICULTY_COLORS: Record<string, string> = {
   beginner: '#4CAF50',
@@ -37,33 +37,8 @@ function CategoryBadge({ category }: { category: string }) {
 
 export default function PromptsScreen() {
   const router = useRouter();
-  const [prompts, setPrompts] = useState<Prompt[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchPrompts = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await api.get<PaginatedResponse<Prompt>>(
-        '/prompts?page=1&limit=20',
-      );
-      setPrompts(data.items);
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setError(err.message);
-      } else {
-        setError('주제 목록을 불러오지 못했습니다.');
-      }
-      setPrompts([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchPrompts();
-  }, [fetchPrompts]);
+  const { data, isLoading, error, refetch } = usePrompts();
+  const prompts = data?.items ?? [];
 
   const renderItem = useCallback(
     ({ item }: { item: Prompt }) => (
@@ -86,7 +61,7 @@ export default function PromptsScreen() {
 
   const keyExtractor = useCallback((item: Prompt) => String(item.id), []);
 
-  if (loading) {
+  if (isLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" color="#2196F3" />
@@ -98,8 +73,8 @@ export default function PromptsScreen() {
   if (error) {
     return (
       <View style={styles.center}>
-        <Text style={styles.errorText}>{error}</Text>
-        <Pressable style={styles.retryButton} onPress={fetchPrompts}>
+        <Text style={styles.errorText}>{error.message}</Text>
+        <Pressable style={styles.retryButton} onPress={() => refetch()}>
           <Text style={styles.retryButtonText}>다시 시도</Text>
         </Pressable>
       </View>
