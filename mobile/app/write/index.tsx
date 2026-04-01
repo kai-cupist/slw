@@ -54,11 +54,14 @@ export default function WriteScreen() {
     }
   }, [submission]);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitPhase, setSubmitPhase] = useState('');
+
   const { mutateAsync: createSubmission } = useCreateSubmission();
   const { mutateAsync: saveSubmission, isPending: saving } =
     useSaveSubmission();
   const { mutateAsync: submitSubmission } = useSubmitSubmission();
-  const { mutateAsync: evaluate, isPending: submitting } = useEvaluate();
+  const { mutateAsync: evaluate } = useEvaluate();
 
   /**
    * draft가 없으면 먼저 생성하고, 있으면 content를 저장한다.
@@ -104,7 +107,7 @@ export default function WriteScreen() {
   };
 
   const handleSubmit = async () => {
-    if (submitting) return;
+    if (isSubmitting) return;
 
     const trimmed = content.trim();
     if (trimmed.length === 0) {
@@ -112,8 +115,10 @@ export default function WriteScreen() {
       return;
     }
 
+    setIsSubmitting(true);
     try {
       // 1. 변경분이 있으면 저장 (없으면 생성만)
+      setSubmitPhase('저장 중...');
       let sid = submissionId;
       if (!sid || content !== lastSavedContent.current) {
         sid = await ensureCreatedAndSave(content);
@@ -121,9 +126,11 @@ export default function WriteScreen() {
       }
 
       // 2. 제출
+      setSubmitPhase('제출 중...');
       await submitSubmission(sid);
 
       // 3. 평가
+      setSubmitPhase('AI 평가 중...');
       await evaluate(sid);
 
       // 4. 결과 화면
@@ -134,6 +141,9 @@ export default function WriteScreen() {
           ? err.message
           : '제출 중 오류가 발생했습니다. 다시 시도해 주세요.';
       Alert.alert('오류', message);
+    } finally {
+      setIsSubmitting(false);
+      setSubmitPhase('');
     }
   };
 
@@ -178,7 +188,7 @@ export default function WriteScreen() {
           placeholderTextColor="#999"
           value={content}
           onChangeText={setContent}
-          editable={!isSubmitted && !submitting}
+          editable={!isSubmitted && !isSubmitting}
           textAlignVertical="top"
         />
       </ScrollView>
@@ -199,7 +209,7 @@ export default function WriteScreen() {
                 saving && styles.buttonDisabled,
               ]}
               onPress={handleSave}
-              disabled={saving || submitting}
+              disabled={saving || isSubmitting}
             >
               {saving ? (
                 <ActivityIndicator size="small" color="#2196F3" />
@@ -212,13 +222,16 @@ export default function WriteScreen() {
               style={({ pressed }) => [
                 styles.submitButton,
                 pressed && styles.buttonPressed,
-                submitting && styles.buttonDisabled,
+                isSubmitting && styles.buttonDisabled,
               ]}
               onPress={handleSubmit}
-              disabled={saving || submitting}
+              disabled={saving || isSubmitting}
             >
-              {submitting ? (
-                <ActivityIndicator size="small" color="#fff" />
+              {isSubmitting ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <ActivityIndicator size="small" color="#fff" />
+                  <Text style={styles.submitButtonText}>{submitPhase}</Text>
+                </View>
               ) : (
                 <Text style={styles.submitButtonText}>제출</Text>
               )}

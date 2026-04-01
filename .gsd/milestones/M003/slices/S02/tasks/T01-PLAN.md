@@ -1,10 +1,12 @@
-# S02: 제출 로딩 UX 개선
+---
+estimated_steps: 29
+estimated_files: 1
+skills_used: []
+---
 
-**Goal:** write 화면에서 제출 흐름 전체(저장→제출→평가) 동안 로딩 상태를 단일 isSubmitting state로 통합하고, 단계별 진행 텍스트를 표시한다.
-**Demo:** After this: 제출 버튼을 누르면 로딩이 표시되고, 완료 시 자연스럽게 평가 결과 화면으로 전환된다.
+# T01: write/index.tsx에 isSubmitting + submitPhase state로 제출 로딩 UX 구현
 
-## Tasks
-- [x] **T01: evaluate.isPending만 추적하던 submitting을 제거하고, 전체 제출 흐름(저장→제출→AI평가)을 단일 isSubmitting + submitPhase state로 통합하여 단계별 진행 텍스트를 버튼에 표시** — handleSubmit 전체 흐름을 단일 isSubmitting state로 감싸고, 단계별 submitPhase 텍스트(저장 중.../제출 중.../AI 평가 중...)를 버튼에 표시한다.
+handleSubmit 전체 흐름을 단일 isSubmitting state로 감싸고, 단계별 submitPhase 텍스트(저장 중.../제출 중.../AI 평가 중...)를 버튼에 표시한다.
 
 현재 문제: `submitting`이 `evaluate.isPending`만 추적하므로 submitSubmission 단계 동안 버튼이 active 상태다.
 
@@ -36,6 +38,15 @@
 9. styles.submitButton에 `minWidth` 또는 고정 너비를 추가해 submitPhase 텍스트가 길어져도 레이아웃이 깨지지 않도록 처리. 버튼 flex:1을 유지하면 자동으로 늘어나므로 추가 스타일 불필요 — 현재 flex:1이 이미 적용되어 있음.
 
 주의: TanStack Query v5에서 뮤테이션 로딩은 `isPending` (K010). `submitting` 변수 참조를 모두 `isSubmitting`으로 교체해야 타입 에러 없음.
-  - Estimate: 30m
-  - Files: mobile/app/write/index.tsx
-  - Verify: cd mobile && npx tsc --noEmit && grep -q 'isSubmitting' app/write/index.tsx && grep -q 'submitPhase' app/write/index.tsx && grep -q 'AI 평가 중' app/write/index.tsx
+
+## Inputs
+
+- `mobile/app/write/index.tsx`
+
+## Expected Output
+
+- `mobile/app/write/index.tsx`
+
+## Verification
+
+cd mobile && npx tsc --noEmit && grep -q 'isSubmitting' app/write/index.tsx && grep -q 'submitPhase' app/write/index.tsx && grep -q 'AI 평가 중' app/write/index.tsx
