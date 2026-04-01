@@ -123,7 +123,7 @@ export default function HistoryScreen() {
             {
               text: '삭제',
               style: 'destructive',
-              onPress: () => deleteMutation.mutate(item.submission_id),
+              onPress: () => deleteMutation.mutate(String(item.submission_id)),
             },
           ]);
         }}

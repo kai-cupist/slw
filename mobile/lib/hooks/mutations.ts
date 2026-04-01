@@ -82,8 +82,8 @@ export function useEvaluate() {
  */
 export function useDeleteSubmission() {
   const queryClient = useQueryClient();
-  return useMutation<{ deleted: boolean }, Error, number>({
-    mutationFn: (submissionId: number) =>
+  return useMutation<{ deleted: boolean }, Error, string>({
+    mutationFn: (submissionId: string) =>
       api.delete<{ deleted: boolean }>(`/submissions/${submissionId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['evaluationHistory'] });
