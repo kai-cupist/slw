@@ -1,55 +1,61 @@
-# Dependencies
+# ── 의존성 ──
 node_modules/
 
-# Environment
+# ── 환경변수 ──
 .env
+.env.*
+!.env.example
 
-# Build
+# ── 빌드 결과물 ──
 dist/
 build/
+.next/
+web-build/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Agent tooling
-.bg-shell/
-
-# Logs
-*.log
-npm-debug.log*
-
-# Coverage
-coverage/
-
-# Expo / React Native
+# ── Expo / React Native ──
 .expo/
 ios/
 android/
 *.jsbundle
 *.hbc
-web-build/
+expo-env.d.ts
 
-# ── GSD runtime (git 불필요) ──
-# SQLite DB (런타임 캐시, 디스크 아티팩트에서 재생성)
+# ── 테스트 ──
+coverage/
+
+# ── 로그 ──
+*.log
+npm-debug.log*
+
+# ── IDE / 에디터 ──
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.code-workspace
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+
+# ── 캐시 / 임시 ──
+.cache/
+tmp/
+
+# ── Agent tooling ──
+.bg-shell/
+
+# ── GSD runtime ──
 .gsd/gsd.db
 .gsd/gsd.db-wal
 .gsd/gsd.db-shm
-# 세션/런타임 파일
 .gsd/auto.lock
 .gsd/completed-units.json
 .gsd/STATE.md
 .gsd/metrics.json
 .gsd/state-manifest.json
 .gsd/event-log.jsonl
-# 런타임 디렉토리
 .gsd/runtime/
 .gsd/activity/
 .gsd/journal/
@@ -58,19 +64,10 @@ web-build/
 .gsd/reports/
 .gsd/browser-state/
 .gsd/browser-baselines/
-# 인터럽트 복구 마커
 .gsd/milestones/**/continue.md
 .gsd/milestones/**/*-CONTINUE.md
 
-# ── 기타 ──
-.env.*
-!.env.example
-.cache/
-tmp/
-
 # ── GSD baseline (auto-generated) ──
-*.code-workspace
-.next/
 __pycache__/
 *.pyc
 .venv/
