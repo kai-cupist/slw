@@ -7,6 +7,7 @@ import type {
   EvaluationHistory,
   ScoreTrend,
   PaginatedResponse,
+  SubmissionWithPrompt,
 } from '../types';
 
 /**
@@ -82,5 +83,22 @@ export function useScoreTrend() {
     queryKey: ['scoreTrend'],
     queryFn: () => api.get<ScoreTrend[]>('/evaluations/scores/trend?limit=10'),
     staleTime: 60_000,
+  });
+}
+
+/**
+ * 특정 프롬프트의 기존 draft 제출물 조회 (최대 1개)
+ * staleTime: 30초 — 제출 관련이므로 빠른 갱신
+ * enabled: promptId가 있을 때만 실행
+ */
+export function usePromptDraft(promptId: string | undefined) {
+  return useQuery<PaginatedResponse<SubmissionWithPrompt>>({
+    queryKey: ['promptDraft', promptId],
+    queryFn: () =>
+      api.get<PaginatedResponse<SubmissionWithPrompt>>(
+        '/submissions?status=draft&promptId=' + promptId + '&limit=1',
+      ),
+    staleTime: 30_000,
+    enabled: !!promptId,
   });
 }

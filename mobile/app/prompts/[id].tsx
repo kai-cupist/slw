@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import { useCreateSubmission } from '../../lib/hooks/mutations';
-import { usePrompt } from '../../lib/hooks/queries';
+import { usePrompt, usePromptDraft } from '../../lib/hooks/queries';
 
 const DIFFICULTY_COLORS: Record<string, string> = {
   beginner: '#4CAF50',
@@ -26,6 +26,13 @@ export default function PromptDetailScreen() {
   const { data: prompt, isLoading, error } = usePrompt(id);
   const { mutateAsync: createSubmission, isPending: creating } =
     useCreateSubmission();
+  const { data: draftResult, isLoading: draftLoading } = usePromptDraft(id);
+  const existingDraft = draftResult?.items[0] ?? null;
+
+  const handleContinueWriting = () => {
+    if (!existingDraft) return;
+    router.push(`/write/${existingDraft.id}`);
+  };
 
   const handleStartWriting = async () => {
     if (!id || creating) return;
@@ -78,21 +85,33 @@ export default function PromptDetailScreen() {
       </ScrollView>
 
       <View style={styles.footer}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.startButton,
-            pressed && styles.startButtonPressed,
-            creating && styles.startButtonDisabled,
-          ]}
-          onPress={handleStartWriting}
-          disabled={creating}
-        >
-          {creating ? (
-            <ActivityIndicator size="small" color="#fff" />
-          ) : (
-            <Text style={styles.startButtonText}>작성 시작</Text>
-          )}
-        </Pressable>
+        {existingDraft ? (
+          <Pressable
+            style={({ pressed }) => [
+              styles.continueButton,
+              pressed && styles.startButtonPressed,
+            ]}
+            onPress={handleContinueWriting}
+          >
+            <Text style={styles.startButtonText}>이어서 작성</Text>
+          </Pressable>
+        ) : (
+          <Pressable
+            style={({ pressed }) => [
+              styles.startButton,
+              pressed && styles.startButtonPressed,
+              (creating || draftLoading) && styles.startButtonDisabled,
+            ]}
+            onPress={handleStartWriting}
+            disabled={creating || draftLoading}
+          >
+            {creating || draftLoading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <Text style={styles.startButtonText}>작성 시작</Text>
+            )}
+          </Pressable>
+        )}
       </View>
     </View>
   );
@@ -170,5 +189,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 17,
     fontWeight: '600',
+  },
+  continueButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
   },
 });

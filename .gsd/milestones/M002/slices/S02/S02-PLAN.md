@@ -13,7 +13,7 @@
   - Estimate: 30m
   - Files: server/src/submissions/dto/get-submissions.dto.ts, server/src/submissions/submissions.repository.ts, server/src/submissions/submissions.service.ts
   - Verify: cd server && npm run build 2>&1 | tail -5 && echo 'BUILD OK'
-- [ ] **T02: 클라이언트 usePromptDraft hook 추가 및 prompts/[id].tsx draft 분기 버튼 구현** — T01에서 서버에 추가된 `promptId` 필터를 활용하여 `usePromptDraft` hook을 구현하고, `prompts/[id].tsx` 화면에서 draft 유무에 따라 버튼을 분기한다.
+- [x] **T02: usePromptDraft hook을 추가하고 prompts/[id].tsx에서 draft 유무에 따라 "이어서 작성"/"작성 시작" 버튼을 분기 표시** — T01에서 서버에 추가된 `promptId` 필터를 활용하여 `usePromptDraft` hook을 구현하고, `prompts/[id].tsx` 화면에서 draft 유무에 따라 버튼을 분기한다.
 
 1. `mobile/lib/hooks/queries.ts`에 `usePromptDraft(promptId: string | undefined)` hook을 추가한다:
    - queryKey: `['promptDraft', promptId]`
