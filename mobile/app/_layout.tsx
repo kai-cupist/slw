@@ -42,15 +42,15 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
             name="prompts/[id]"
-            options={{ title: '주제 상세', headerBackTitle: '목록' }}
+            options={{ title: '주제 상세', headerBackButtonDisplayMode: 'minimal' }}
           />
           <Stack.Screen
             name="write/index"
-            options={{ title: '답안 작성', headerBackTitle: '뒤로' }}
+            options={{ title: '답안 작성', headerBackButtonDisplayMode: 'minimal' }}
           />
           <Stack.Screen
             name="evaluation/[submissionId]"
-            options={{ title: '평가 결과', headerBackTitle: '뒤로' }}
+            options={{ title: '평가 결과', headerBackButtonDisplayMode: 'minimal' }}
           />
         </Stack>
         <StatusBar style="auto" />

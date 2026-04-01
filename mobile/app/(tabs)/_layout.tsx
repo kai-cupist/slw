@@ -1,4 +1,5 @@
 import { Tabs } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
 import React from 'react';
 import { Platform } from 'react-native';
 
@@ -19,6 +20,14 @@ export default function TabLayout() {
         options={{
           title: '쓰기 주제',
           tabBarLabel: '주제',
+          tabBarIcon: ({ color, focused }) => (
+            <SymbolView
+              name={{ ios: 'list.bullet', android: 'format_list_bulleted', web: 'format_list_bulleted' }}
+              size={24}
+              tintColor={color}
+              weight={focused ? 'semibold' : 'regular'}
+            />
+          ),
         }}
       />
       <Tabs.Screen
@@ -26,6 +35,14 @@ export default function TabLayout() {
         options={{
           title: '제출 이력',
           tabBarLabel: '이력',
+          tabBarIcon: ({ color, focused }) => (
+            <SymbolView
+              name={{ ios: 'clock.arrow.circlepath', android: 'history', web: 'history' }}
+              size={24}
+              tintColor={color}
+              weight={focused ? 'semibold' : 'regular'}
+            />
+          ),
         }}
       />
     </Tabs>
