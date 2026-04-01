@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 
-import { useEvaluation } from '../../lib/hooks/queries';
+import { useEvaluation, useSubmission } from '../../lib/hooks/queries';
 
 /** 점수 항목 라벨 매핑 */
 const SCORE_LABELS: Record<string, string> = {
@@ -55,6 +55,7 @@ export default function EvaluationScreen() {
   const router = useRouter();
 
   const { data: evaluation, isLoading, error } = useEvaluation(submissionId);
+  const { data: submission } = useSubmission(submissionId);
 
   if (isLoading) {
     return (
@@ -98,6 +99,14 @@ export default function EvaluationScreen() {
         </Text>
         <Text style={styles.totalMax}> / 10</Text>
       </View>
+
+      {/* 작성 내용 */}
+      {submission?.content ? (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>작성 내용</Text>
+          <Text style={styles.submissionContent}>{submission.content}</Text>
+        </View>
+      ) : null}
 
       {/* 항목별 점수 */}
       <View style={styles.section}>
@@ -280,5 +289,10 @@ const styles = StyleSheet.create({
   },
   buttonPressed: {
     opacity: 0.7,
+  },
+  submissionContent: {
+    fontSize: 15,
+    lineHeight: 24,
+    color: '#333',
   },
 });
