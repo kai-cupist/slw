@@ -74,3 +74,20 @@ export function useEvaluate() {
     },
   });
 }
+
+/**
+ * 제출물 삭제
+ * DELETE /submissions/:id를 호출하고 삭제 결과를 반환한다.
+ * 성공 시 evaluationHistory와 scoreTrend 캐시를 무효화하여 이력 화면을 자동 갱신한다.
+ */
+export function useDeleteSubmission() {
+  const queryClient = useQueryClient();
+  return useMutation<{ deleted: boolean }, Error, number>({
+    mutationFn: (submissionId: number) =>
+      api.delete<{ deleted: boolean }>(`/submissions/${submissionId}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['evaluationHistory'] });
+      queryClient.invalidateQueries({ queryKey: ['scoreTrend'] });
+    },
+  });
+}

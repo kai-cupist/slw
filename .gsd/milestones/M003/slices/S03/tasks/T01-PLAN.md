@@ -1,10 +1,12 @@
-# S03: 삭제 기능 완성
+---
+estimated_steps: 19
+estimated_files: 3
+skills_used: []
+---
 
-**Goal:** 이력 화면에서 카드를 왼쪽으로 스와이프하면 빨간 삭제 버튼이 나타나고, 탭 후 확인하면 항목이 목록에서 사라진다.
-**Demo:** After this: 이력 목록에서 항목을 스와이프하거나 버튼을 탭해 삭제하면 목록에서 사라진다.
+# T01: GestureHandlerRootView 래핑 + 스와이프 삭제 UI 연결
 
-## Tasks
-- [x] **T01: GestureHandlerRootView 래핑, useDeleteSubmission hook, ReanimatedSwipeable 스와이프 삭제 UI를 세 파일에 구현했다** — 세 파일을 순서대로 수정하여 스와이프 삭제 기능을 완성한다.
+세 파일을 순서대로 수정하여 스와이프 삭제 기능을 완성한다.
 
 1. `mobile/app/_layout.tsx` — GestureHandlerRootView 래핑
    - `react-native-gesture-handler`에서 GestureHandlerRootView를 import한다.
@@ -26,6 +28,25 @@
    - `renderItem`에서 기존 Pressable 카드를 ReanimatedSwipeable로 감싼다: `<ReanimatedSwipeable renderRightActions={...} overshootRight={false}>...기존 카드...</ReanimatedSwipeable>`
    - ReanimatedSwipeable에서 스타일 충돌을 방지하기 위해 ref 불필요(단순 삭제 버튼이므로 자동 닫힘 불필요).
    - renderItem은 useCallback 내부이므로 deleteMutation을 의존성에 추가하지 않아도 되나, 안전을 위해 `deleteMutation.mutate`를 dep로 추가한다.
-  - Estimate: 45m
-  - Files: mobile/app/_layout.tsx, mobile/lib/hooks/mutations.ts, mobile/app/(tabs)/history.tsx
-  - Verify: cd mobile && npx tsc --noEmit && grep -q 'GestureHandlerRootView' app/_layout.tsx && grep -q 'useDeleteSubmission' lib/hooks/mutations.ts && grep -q 'ReanimatedSwipeable' app/\(tabs\)/history.tsx
+
+## Inputs
+
+- `mobile/app/_layout.tsx`
+- `mobile/lib/hooks/mutations.ts`
+- `mobile/app/(tabs)/history.tsx`
+- `mobile/lib/api.ts`
+- `mobile/lib/types.ts`
+
+## Expected Output
+
+- `mobile/app/_layout.tsx`
+- `mobile/lib/hooks/mutations.ts`
+- `mobile/app/(tabs)/history.tsx`
+
+## Verification
+
+cd mobile && npx tsc --noEmit && grep -q 'GestureHandlerRootView' app/_layout.tsx && grep -q 'useDeleteSubmission' lib/hooks/mutations.ts && grep -q 'ReanimatedSwipeable' app/\(tabs\)/history.tsx
+
+## Observability Impact
+
+삭제 API 실패 시 Alert.alert으로 에러 메시지를 사용자에게 노출한다. onError 핸들러를 mutate 호출부에 추가하거나 mutation의 onError에서 Alert를 띄운다.

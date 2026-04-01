@@ -2,14 +2,17 @@ import { useRouter } from 'expo-router';
 import React, { useCallback } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 
 import { useEvaluationHistory, useScoreTrend } from '../../lib/hooks/queries';
+import { useDeleteSubmission } from '../../lib/hooks/mutations';
 import type { EvaluationHistory, ScoreTrend } from '../../lib/types';
 
 const DIFFICULTY_COLORS: Record<string, string> = {
@@ -100,6 +103,7 @@ export default function HistoryScreen() {
     isFetching,
   } = useEvaluationHistory();
   const { refetch: refetchTrend } = useScoreTrend();
+  const deleteMutation = useDeleteSubmission();
 
   const items = data?.pages.flatMap((p) => p.items) ?? [];
 
@@ -123,37 +127,63 @@ export default function HistoryScreen() {
     );
   }, [isFetchingNextPage]);
 
+  const renderRightActions = useCallback(
+    (item: EvaluationHistory) => () => (
+      <Pressable
+        style={styles.deleteAction}
+        onPress={() => {
+          Alert.alert('삭제', '이 이력을 삭제하시겠습니까?', [
+            { text: '취소', style: 'cancel' },
+            {
+              text: '삭제',
+              style: 'destructive',
+              onPress: () => deleteMutation.mutate(item.submission_id),
+            },
+          ]);
+        }}
+      >
+        <Text style={styles.deleteActionText}>삭제</Text>
+      </Pressable>
+    ),
+    [deleteMutation.mutate],
+  );
+
   const renderItem = useCallback(
     ({ item }: { item: EvaluationHistory }) => {
       const diffColor = DIFFICULTY_COLORS[item.prompt_difficulty] ?? '#9E9E9E';
       return (
-        <Pressable
-          style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
-          onPress={() => router.push(`/evaluation/${item.submission_id}`)}
+        <ReanimatedSwipeable
+          renderRightActions={renderRightActions(item)}
+          overshootRight={false}
         >
-          <View style={styles.cardTop}>
-            <Text style={styles.cardTitle} numberOfLines={1}>
-              {item.prompt_title}
-            </Text>
-            <Text
-              style={[
-                styles.cardScore,
-                { color: scoreColor(item.total_score) },
-              ]}
-            >
-              {item.total_score}점
-            </Text>
-          </View>
-          <View style={styles.cardBottom}>
-            <View style={[styles.diffBadge, { backgroundColor: diffColor }]}>
-              <Text style={styles.diffBadgeText}>{item.prompt_difficulty}</Text>
+          <Pressable
+            style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
+            onPress={() => router.push(`/evaluation/${item.submission_id}`)}
+          >
+            <View style={styles.cardTop}>
+              <Text style={styles.cardTitle} numberOfLines={1}>
+                {item.prompt_title}
+              </Text>
+              <Text
+                style={[
+                  styles.cardScore,
+                  { color: scoreColor(item.total_score) },
+                ]}
+              >
+                {item.total_score}점
+              </Text>
             </View>
-            <Text style={styles.cardDate}>{formatDate(item.evaluated_at)}</Text>
-          </View>
-        </Pressable>
+            <View style={styles.cardBottom}>
+              <View style={[styles.diffBadge, { backgroundColor: diffColor }]}>
+                <Text style={styles.diffBadgeText}>{item.prompt_difficulty}</Text>
+              </View>
+              <Text style={styles.cardDate}>{formatDate(item.evaluated_at)}</Text>
+            </View>
+          </Pressable>
+        </ReanimatedSwipeable>
       );
     },
-    [router],
+    [router, renderRightActions],
   );
 
   const keyExtractor = useCallback(
@@ -372,5 +402,19 @@ const styles = StyleSheet.create({
   footerLoader: {
     paddingVertical: 16,
     alignItems: 'center',
+  },
+  // ── Swipe delete ──
+  deleteAction: {
+    width: 80,
+    backgroundColor: '#F44336',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+    borderRadius: 12,
+  },
+  deleteActionText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

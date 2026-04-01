@@ -13,6 +13,7 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { useUserStore } from '../stores/userStore';
 
@@ -36,26 +37,28 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="prompts/[id]"
-            options={{ title: '주제 상세', headerBackButtonDisplayMode: 'minimal' }}
-          />
-          <Stack.Screen
-            name="write/index"
-            options={{ title: '답안 작성', headerBackButtonDisplayMode: 'minimal' }}
-          />
-          <Stack.Screen
-            name="evaluation/[submissionId]"
-            options={{ title: '평가 결과', headerBackButtonDisplayMode: 'minimal' }}
-          />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="prompts/[id]"
+              options={{ title: '주제 상세', headerBackButtonDisplayMode: 'minimal' }}
+            />
+            <Stack.Screen
+              name="write/index"
+              options={{ title: '답안 작성', headerBackButtonDisplayMode: 'minimal' }}
+            />
+            <Stack.Screen
+              name="evaluation/[submissionId]"
+              options={{ title: '평가 결과', headerBackButtonDisplayMode: 'minimal' }}
+            />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
 
