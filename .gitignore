@@ -50,17 +50,19 @@ tmp/
 .claude/plans
 
 # ── GSD runtime ──
+# DB / 락
 .gsd/gsd.db
 .gsd/gsd.db-wal
 .gsd/gsd.db-shm
-.gsd/auto.lock
-.gsd/completed-units.json
+.gsd/*.lock
+# 시스템 생성 파일 — 글로브로 묶어 신규 파일도 자동 커버
+.gsd/*.json
+.gsd/*.jsonl
+# 파생 캐시
 .gsd/STATE.md
-.gsd/metrics.json
-.gsd/state-manifest.json
-.gsd/event-log.jsonl
-.gsd/doctor-history.jsonl
-.gsd/DISCUSSION-MANIFEST.json
+.gsd/CODEBASE.md
+.gsd/last-snapshot.md
+# 시스템 관리 디렉토리
 .gsd/runtime/
 .gsd/activity/
 .gsd/journal/
@@ -70,9 +72,9 @@ tmp/
 .gsd/reports/
 .gsd/browser-state/
 .gsd/browser-baselines/
+# 임시 재개 파일
 .gsd/milestones/**/continue.md
 .gsd/milestones/**/*-CONTINUE.md
-.gsd/notifications.jsonl
 
 # ── GSD baseline (auto-generated) ──
 __pycache__/
