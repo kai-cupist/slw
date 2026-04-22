@@ -47,4 +47,4 @@ tmp/
 # ── Agent tooling ──
 .bg-shell/
 .mcp.json
-.claude/plans
+**/.claude/plans
