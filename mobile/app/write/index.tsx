@@ -131,7 +131,8 @@ export default function WriteScreen() {
 
       // 2. 제출
       setSubmitPhase('제출 중...');
-      await submitSubmission(sid);
+      const effectivePromptId = promptId ?? (submission ? String(submission.prompt_id) : undefined);
+      await submitSubmission({ submissionId: sid, promptId: effectivePromptId });
 
       // 3. 평가
       setSubmitPhase('AI 평가 중...');
@@ -174,7 +175,7 @@ export default function WriteScreen() {
       keyboardVerticalOffset={100}
     >
       <ScrollView contentContainerStyle={styles.scroll}>
-        {isSubmitted ? (
+        {isSubmitted && !isSubmitting ? (
           <View style={styles.statusBanner}>
             <Text style={styles.statusText}>이미 제출된 답안입니다.</Text>
           </View>
@@ -226,18 +227,17 @@ export default function WriteScreen() {
               onPress={handleSubmit}
               disabled={saving || isSubmitting}
             >
-              {isSubmitting ? (
-                <View style={styles.submitInProgress}>
-                  <ActivityIndicator
-                    size="small"
-                    color={colors.textOnPrimary}
-                  />
-                  <Text style={styles.submitButtonText}>{submitPhase}</Text>
-                </View>
-              ) : (
-                <Text style={styles.submitButtonText}>제출</Text>
-              )}
+              <Text style={styles.submitButtonText}>제출</Text>
             </Pressable>
+          </View>
+        </View>
+      ) : null}
+
+      {isSubmitting ? (
+        <View style={styles.overlay}>
+          <View style={styles.overlayCard}>
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={styles.overlayText}>{submitPhase}</Text>
           </View>
         </View>
       ) : null}
@@ -333,10 +333,24 @@ const styles = StyleSheet.create({
     ...typography.button,
     color: colors.textOnPrimary,
   },
-  submitInProgress: {
-    flexDirection: 'row',
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.45)',
     alignItems: 'center',
-    gap: spacing.sm,
+    justifyContent: 'center',
+  },
+  overlayCard: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    paddingVertical: spacing.xxl,
+    paddingHorizontal: spacing.xxxl,
+    ...shadow.card,
+  },
+  overlayText: {
+    marginTop: spacing.md,
+    ...typography.bodySmall,
+    color: colors.textMuted,
   },
   buttonPressed: {
     opacity: 0.8,

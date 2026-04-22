@@ -43,17 +43,27 @@ export function useSaveSubmission() {
 
 /**
  * 제출물 최종 제출
- * 성공 후 해당 submission 캐시를 무효화한다.
+ * 성공 후 해당 submission 캐시와 prompt draft 캐시를 무효화한다.
+ * promptId를 전달하면 "이어서 작성" 버튼이 즉시 사라진다.
  */
 export function useSubmitSubmission() {
   const queryClient = useQueryClient();
-  return useMutation<Submission, Error, string>({
-    mutationFn: (submissionId: string) =>
+  return useMutation<
+    Submission,
+    Error,
+    { submissionId: string; promptId?: string }
+  >({
+    mutationFn: ({ submissionId }) =>
       api.patch<Submission>(`/submissions/${submissionId}/submit`),
-    onSuccess: (_data, submissionId) => {
+    onSuccess: (_data, { submissionId, promptId }) => {
       queryClient.invalidateQueries({
         queryKey: ['submission', submissionId],
       });
+      if (promptId) {
+        queryClient.invalidateQueries({
+          queryKey: ['promptDraft', promptId],
+        });
+      }
     },
   });
 }
