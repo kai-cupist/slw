@@ -39,13 +39,13 @@
 
 ## 기술 스택
 
-| 영역 | 기술 |
-|------|------|
-| 백엔드 | NestJS 11, TypeScript, PostgreSQL 16 |
-| DB 접근 | Raw SQL (pg) — ORM 없음 |
-| AI | Groq API (Llama 3.3 70B) |
-| 모바일 | Expo SDK 55, React Native, TanStack Query v5 |
-| 인프라 | Docker Compose |
+| 영역    | 기술                                         |
+| ------- | -------------------------------------------- |
+| 백엔드  | NestJS 11, TypeScript, PostgreSQL 16         |
+| DB 접근 | Raw SQL (pg)                                 |
+| AI      | Groq API (Llama 3.3 70B)                     |
+| 모바일  | Expo SDK 55, React Native, TanStack Query v5 |
+| 인프라  | Docker Compose                               |
 
 ---
 
@@ -103,15 +103,6 @@ slw/
 ```
 
 ---
-
-## 구현 현황
-
-- ✅ **백엔드** — 14개 REST API, Raw SQL, 트랜잭션 처리
-- ✅ **AI 평가** — 문법 / 논리 / 표현력 / 주제 적절성 4항목 채점
-- ✅ **모바일 앱** — 7개 화면, draft 이어쓰기, pull-to-refresh
-- ✅ **디자인 시스템** — Indigo 팔레트 기반 theme.ts 토큰 시스템
-- 🔜 **말하기** — 음성 녹음 → 발음·유창성 평가
-- 🔜 **듣기** — 오디오 콘텐츠 → 이해도 테스트
 
 ---
 

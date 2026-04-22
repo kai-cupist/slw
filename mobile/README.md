@@ -1,56 +1,56 @@
-# Welcome to your Expo app 👋
+# mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**말하기 듣기 쓰기**의 Expo 클라이언트. 상세 소개·전체 실행법은 [루트 README](../README.md) 참고.
 
-## Get started
+## Stack
 
-1. Install dependencies
+- Expo SDK 55 (CNG, **expo-dev-client 기반**)
+- expo-router (file-based routing, typed routes)
+- TanStack Query v5 · Zustand
+- React Compiler 활성화 (`experiments.reactCompiler: true`)
 
-   ```bash
-   npm install
-   ```
+> `ios/`, `android/` 디렉토리는 gitignore되어 있습니다. `app.json`이 네이티브 설정의 단일 소스이고, 필요 시 `npm run prebuild`로 재생성합니다.
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## 개발 실행
 
 ```bash
-npm run reset-project
+npm install
+npx expo start        # Metro 번들러 + dev client 안내
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+루트에서 `docker compose up -d`로 API 서버가 이미 떠 있어야 합니다 (`http://localhost:3100`).
 
-### Other setup steps
+## 네이티브 빌드가 필요할 때
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+네이티브 모듈을 추가하거나 `app.json`의 플러그인·번들 ID 등을 바꿨을 때만.
 
-## Learn more
+```bash
+npm run prebuild      # ios/, android/ 재생성 (expo prebuild --clean)
+npm run ios           # iOS 시뮬레이터 빌드·실행
+npm run android       # Android 에뮬레이터 빌드·실행
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## 스크립트
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+| 명령                              | 설명                      |
+| --------------------------------- | ------------------------- |
+| `npm run start`                   | Metro 번들러              |
+| `npm run lint` / `lint:check`     | ESLint (자동 수정 / 검사) |
+| `npm run typecheck`               | `tsc --noEmit`            |
+| `npm run format` / `format:check` | Prettier                  |
 
-## Join the community
+## 디렉토리
 
-Join our community of developers creating universal apps.
+```
+mobile/
+├── app/              # expo-router 라우트
+│   ├── (tabs)/           # 탭 네비게이션 (홈, 히스토리)
+│   ├── prompts/[id]      # 주제 상세
+│   ├── write/            # 작성
+│   └── evaluation/[submissionId]  # AI 평가 결과
+├── components/       # 재사용 UI
+├── lib/              # theme.ts (colors/spacing/radius/shadow/typography 토큰), API 클라이언트
+└── stores/           # Zustand 스토어
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+스타일은 `lib/theme.ts`의 토큰만 사용합니다 (하드코딩 색상·픽셀 금지).
