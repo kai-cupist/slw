@@ -5,6 +5,7 @@ import {
   Alert,
   FlatList,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -14,7 +15,6 @@ import ReanimatedSwipeable from 'react-native-gesture-handler/ReanimatedSwipeabl
 import { DifficultyBadge } from '../../components/Badge';
 import { ErrorView } from '../../components/ErrorView';
 import { LoadingView } from '../../components/LoadingView';
-import { ScoreBar } from '../../components/ScoreBar';
 import { useDeleteSubmission } from '../../lib/hooks/mutations';
 import { useEvaluationHistory, useScoreTrend } from '../../lib/hooks/queries';
 import { colors, radius, shadow, spacing, typography } from '../../lib/theme';
@@ -29,44 +29,79 @@ function formatDate(isoString: string): string {
   return `${y}.${m}.${day}`;
 }
 
-/** 점수 추이 섹션 */
-function TrendSection() {
-  const { data: trends, isLoading, error } = useScoreTrend();
+const SCORE_LABELS = ['문', '논', '표', '적'] as const;
 
-  if (isLoading || error) return null;
-  if (!trends || trends.length === 0) return null;
+function TrendChip({ trend }: { trend: ScoreTrend }) {
+  const totalColor =
+    trend.total_score >= 8
+      ? colors.success
+      : trend.total_score >= 5
+        ? colors.warning
+        : colors.danger;
+  const totalBg =
+    trend.total_score >= 8
+      ? colors.successLight
+      : trend.total_score >= 5
+        ? colors.warningLight
+        : colors.dangerLight;
+  const subScores = [
+    trend.grammar_score,
+    trend.logic_score,
+    trend.expression_score,
+    trend.relevance_score,
+  ];
 
   return (
-    <View style={styles.trendSection}>
-      <Text style={styles.trendTitle}>점수 추이 (최근 {trends.length}건)</Text>
-      {trends.map((t: ScoreTrend, idx: number) => (
-        <View key={`${t.evaluated_at}-${idx}`} style={styles.trendItem}>
-          <View style={styles.trendHeader}>
-            <Text style={styles.trendDate}>{formatDate(t.evaluated_at)}</Text>
-            <Text
+    <View style={styles.chip}>
+      <Text style={styles.chipDate}>{formatDate(trend.evaluated_at)}</Text>
+      <View style={[styles.chipBadge, { backgroundColor: totalBg }]}>
+        <Text style={[styles.chipTotal, { color: totalColor }]}>
+          {trend.total_score}
+        </Text>
+        <Text style={[styles.chipTotalUnit, { color: totalColor }]}>점</Text>
+      </View>
+      <View style={styles.chipDots}>
+        {subScores.map((score, i) => (
+          <View key={SCORE_LABELS[i]} style={styles.chipDotCol}>
+            <View
               style={[
-                styles.trendTotal,
+                styles.chipDot,
                 {
-                  color:
-                    t.total_score >= 8
+                  backgroundColor:
+                    score >= 8
                       ? colors.success
-                      : t.total_score >= 5
+                      : score >= 5
                         ? colors.warning
                         : colors.danger,
                 },
               ]}
-            >
-              {t.total_score}점
-            </Text>
+            />
+            <Text style={styles.chipDotLabel}>{SCORE_LABELS[i]}</Text>
           </View>
-          <View style={styles.trendBars}>
-            <ScoreBar score={t.grammar_score} label="문법" size="mini" />
-            <ScoreBar score={t.logic_score} label="논리" size="mini" />
-            <ScoreBar score={t.expression_score} label="표현" size="mini" />
-            <ScoreBar score={t.relevance_score} label="적절" size="mini" />
-          </View>
-        </View>
-      ))}
+        ))}
+      </View>
+    </View>
+  );
+}
+
+/** 점수 추이 섹션 */
+function TrendSection() {
+  const { data: trends, isLoading, error } = useScoreTrend();
+
+  if (isLoading || error || !trends || trends.length === 0) return null;
+
+  return (
+    <View style={styles.trendSection}>
+      <Text style={styles.trendTitle}>점수 추이</Text>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.trendScroll}
+      >
+        {trends.map((t: ScoreTrend, idx: number) => (
+          <TrendChip key={`${t.evaluated_at}-${idx}`} trend={t} />
+        ))}
+      </ScrollView>
     </View>
   );
 }
@@ -136,6 +171,13 @@ export default function HistoryScreen() {
 
   const renderItem = useCallback(
     ({ item }: { item: EvaluationHistory }) => {
+      const accentColor =
+        item.total_score >= 8
+          ? colors.success
+          : item.total_score >= 5
+            ? colors.warning
+            : colors.danger;
+
       return (
         <ReanimatedSwipeable
           renderRightActions={renderRightActions(item)}
@@ -148,31 +190,23 @@ export default function HistoryScreen() {
             ]}
             onPress={() => router.push(`/evaluation/${item.submission_id}`)}
           >
-            <View style={styles.cardTop}>
-              <Text style={styles.cardTitle} numberOfLines={1}>
-                {item.prompt_title}
-              </Text>
-              <Text
-                style={[
-                  styles.cardScore,
-                  {
-                    color:
-                      item.total_score >= 8
-                        ? colors.success
-                        : item.total_score >= 5
-                          ? colors.warning
-                          : colors.danger,
-                  },
-                ]}
-              >
-                {item.total_score}점
-              </Text>
-            </View>
-            <View style={styles.cardBottom}>
-              <DifficultyBadge difficulty={item.prompt_difficulty} />
-              <Text style={styles.cardDate}>
-                {formatDate(item.evaluated_at)}
-              </Text>
+            <View style={[styles.cardAccent, { backgroundColor: accentColor }]} />
+            <View style={styles.cardContent}>
+              <View style={styles.cardTop}>
+                <Text style={styles.cardTitle} numberOfLines={1}>
+                  {item.prompt_title}
+                </Text>
+                <Text style={[styles.cardScore, { color: accentColor }]}>
+                  {item.total_score}
+                  <Text style={styles.cardScoreUnit}>점</Text>
+                </Text>
+              </View>
+              <View style={styles.cardBottom}>
+                <DifficultyBadge difficulty={item.prompt_difficulty} />
+                <Text style={styles.cardDate}>
+                  {formatDate(item.evaluated_at)}
+                </Text>
+              </View>
             </View>
           </Pressable>
         </ReanimatedSwipeable>
@@ -240,23 +274,32 @@ const styles = StyleSheet.create({
   },
   list: {
     padding: spacing.lg,
+    paddingBottom: spacing.xxxl,
     backgroundColor: colors.background,
   },
   // ── History card ──
   card: {
+    flexDirection: 'row',
     backgroundColor: colors.surface,
     borderRadius: radius.md,
-    padding: spacing.lg,
     marginBottom: spacing.md,
+    overflow: 'hidden',
     ...shadow.card,
   },
   cardPressed: {
-    opacity: 0.7,
+    opacity: 0.72,
+  },
+  cardAccent: {
+    width: 4,
+  },
+  cardContent: {
+    flex: 1,
+    padding: spacing.lg,
   },
   cardTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: spacing.sm,
   },
   cardTitle: {
@@ -266,8 +309,13 @@ const styles = StyleSheet.create({
     marginRight: spacing.md,
   },
   cardScore: {
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 22,
+    fontWeight: '800',
+    letterSpacing: -0.5,
+  },
+  cardScoreUnit: {
+    fontSize: 13,
+    fontWeight: '600',
   },
   cardBottom: {
     flexDirection: 'row',
@@ -282,37 +330,69 @@ const styles = StyleSheet.create({
   trendSection: {
     backgroundColor: colors.surface,
     borderRadius: radius.md,
-    padding: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.md,
     marginBottom: spacing.xl,
     ...shadow.card,
   },
   trendTitle: {
-    ...typography.h3,
-    color: colors.textPrimary,
-    marginBottom: spacing.md,
-  },
-  trendItem: {
-    marginBottom: spacing.md,
-    paddingBottom: spacing.md,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: colors.border,
-  },
-  trendHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: spacing.sm,
-  },
-  trendDate: {
-    ...typography.bodySmall,
+    ...typography.label,
     color: colors.textMuted,
+    letterSpacing: 0.8,
+    textTransform: 'uppercase',
+    marginBottom: spacing.md,
+    paddingHorizontal: spacing.lg,
   },
-  trendTotal: {
-    fontSize: 16,
-    fontWeight: '700',
+  trendScroll: {
+    paddingHorizontal: spacing.lg,
+    gap: spacing.sm,
   },
-  trendBars: {
+  // ── Trend chip ──
+  chip: {
+    width: 80,
+    alignItems: 'center',
     gap: spacing.xs,
+  },
+  chipDate: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: colors.textMuted,
+    letterSpacing: 0.2,
+  },
+  chipBadge: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.full,
+    gap: 1,
+  },
+  chipTotal: {
+    fontSize: 18,
+    fontWeight: '800',
+    letterSpacing: -0.5,
+  },
+  chipTotalUnit: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  chipDots: {
+    flexDirection: 'row',
+    gap: spacing.xs,
+  },
+  chipDotCol: {
+    alignItems: 'center',
+    gap: 2,
+  },
+  chipDot: {
+    width: 8,
+    height: 8,
+    borderRadius: radius.full,
+  },
+  chipDotLabel: {
+    fontSize: 9,
+    fontWeight: '500',
+    color: colors.textMuted,
   },
   footerLoader: {
     paddingVertical: spacing.lg,
