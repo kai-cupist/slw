@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Dimensions, StyleSheet, Text, View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { useDebugNavigationState } from '../lib/hooks/useDebugNavigationState';
 import { colors, shadow, typography } from '../lib/theme';
 import { useUserStore } from '../stores/userStore';
 
@@ -90,6 +91,7 @@ const AppTheme = {
 };
 
 export default function RootLayout() {
+  useDebugNavigationState();
   const isLoaded = useUserStore((s) => s.isLoaded);
   const loadUserId = useUserStore((s) => s.loadUserId);
   const [showSplash, setShowSplash] = useState(true);
