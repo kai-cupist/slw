@@ -43,8 +43,7 @@ docker compose exec api npm run migration:run       # 마이그레이션 (반드
 
 ## Workflow
 
-- 기능 단위 작업은 **GSD(Get Shit Done)** 루프를 따른다. 상태·계획·요구사항의 원본은 `PROJECT_BRIEF.md`와 `.gsd/` 디렉토리.
-- GSD 도구 호출·응답·문서도 한국어로.
+- 미정
 
 ## Scope Guards
 
