@@ -46,6 +46,8 @@ tmp/
 
 # ── Agent tooling ──
 .bg-shell/
+.mcp.json
+.claude/plans
 
 # ── GSD runtime ──
 .gsd/gsd.db
@@ -70,6 +72,7 @@ tmp/
 .gsd/browser-baselines/
 .gsd/milestones/**/continue.md
 .gsd/milestones/**/*-CONTINUE.md
+.gsd/notifications.jsonl
 
 # ── GSD baseline (auto-generated) ──
 __pycache__/
